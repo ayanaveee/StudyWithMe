@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+    <title>Учебные материалы</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #ccc;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            font-size: 18px;
+        }
+        tr.topics-row {
+            display: none;
+            background-color: #f9f9f9;
+        }
+        ul {
+            list-style: none;
+            padding-left: 0;
+            margin: 10px 0;
+        }
+        ul li {
+            margin: 5px 0;
+        }
+        ul li a {
+            text-decoration: none;
+            color: #2a5db0;
+        }
+        ul li a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <h1>Категории учебных материалов</h1>
+    <table>
+        <tbody>
+        {% for category in categories %}
+            <tr class="category-row" data-cat-id="{{ category.id }}">
+                <td colspan="4">{{ category.title }}</td>
+            </tr>
+            <tr class="topics-row" id="topics-{{ category.id }}">
+                <td colspan="4">
+                    {% if category.studymaterial_set.all %}
+                    <ul>
+                        {% for material in category.studymaterial_set.all %}
+                            <li>
+                                <a href="{% url 'study_material_detail' material.pk %}">{{ material.topic }}</a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                    {% else %}
+                        <p>Материалы отсутствуют</p>
+                    {% endif %}
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <script>
+        document.querySelectorAll('.category-row').forEach(row => {
+            row.addEventListener('click', () => {
+                const catId = row.getAttribute('data-cat-id');
+                const topicsRow = document.getElementById('topics-' + catId);
+                if (topicsRow.style.display === 'table-row') {
+                    topicsRow.style.display = 'none';
+                } else {
+                    document.querySelectorAll('.topics-row').forEach(tr => tr.style.display = 'none');
+                    topicsRow.style.display = 'table-row';
+                }
+            });
+        });
+    </script>
+{% endblock %}

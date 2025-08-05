@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+    <title>{{ material.topic }}</title>
+    <h1>{{ material.topic }}</h1>
+    <p><strong>Описание:</strong> {{ material.description }}</p>
+
+    {% if material.video %}
+        <video width="600" controls>
+            <source src="{{ material.video.url }}" type="video/mp4">
+            Ваш браузер не поддерживает видео.
+        </video>
+    {% endif %}
+
+    <p><a href="{% url 'study_materials' %}">← Назад к категориям</a></p>
+
+{% endblock %}

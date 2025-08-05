@@ -3,13 +3,13 @@ from .models import StudySession, Goal, Note, Achievement
 
 @admin.register(StudySession)
 class StudySessionAdmin(admin.ModelAdmin):
-    list_display = ('user', 'date', 'created_at')
+    list_display = ('user', 'start_time', 'end_date', 'note')
     search_fields = ('user__username', 'note')
 
 @admin.register(Goal)
 class GoalAdmin(admin.ModelAdmin):
-    list_display = ('user', 'target', 'start_date', 'end_date', 'created_at')
-    search_fields = ('user__username', 'target')
+    list_display = ('user', 'title', 'created_at', 'deadline', 'category', 'related_to')
+    search_fields = ('user__username', 'title')
 
 @admin.register(Note)
 class NoteAdmin(admin.ModelAdmin):

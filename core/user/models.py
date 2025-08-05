@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
+from .choices import UserRoleEnum
 
 class MyUserManager(BaseUserManager):
     def create_user(self, username, email, password=None):
@@ -14,7 +15,7 @@ class MyUserManager(BaseUserManager):
 
     def create_superuser(self, username, email, password=None):
         user = self.create_user(username=username, email=email, password=password)
-        user.is_admin = True
+        user.role = UserRoleEnum.ADMIN
         user.is_superuser = True
         user.save(using=self._db)
         return user
@@ -28,9 +29,12 @@ class MyUser(AbstractBaseUser, PermissionsMixin):
     is_2fa_enabled = models.BooleanField(default=False, verbose_name='Двухфакторная аутентификация')
 
     is_active = models.BooleanField(default=True, verbose_name='Активен')
-    is_admin = models.BooleanField(default=False, verbose_name='Администратор')
-    is_superuser = models.BooleanField(default=False, verbose_name='Суперпользователь')
-
+    role = models.CharField(
+        max_length=20,
+        choices=UserRoleEnum.choices,
+        default=UserRoleEnum.STUDENT,
+        verbose_name='Роль'
+    )
     objects = MyUserManager()
 
     USERNAME_FIELD = 'email'
@@ -41,7 +45,7 @@ class MyUser(AbstractBaseUser, PermissionsMixin):
 
     @property
     def is_staff(self):
-        return self.is_admin
+        return self.role == UserRoleEnum.ADMIN
 
     class Meta:
         verbose_name = 'Пользователь'

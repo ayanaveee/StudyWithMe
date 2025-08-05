@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<section class="content-section bg-light" id="achievements">
+  <div class="container px-4 px-lg-5">
+    <div class="content-section-heading text-center mb-5">
+      <h3 class="text-secondary">StudyWithMe</h3>
+      <h2 class="mb-4">Мои достижения</h2>
+
+      <h4 class="mt-4">Текущий уровень: {{ user_level }}</h4>
+      <div class="progress mx-auto" style="width: 60%; height: 25px;">
+        <div class="progress-bar progress-bar-striped progress-bar-animated bg-success"
+             role="progressbar"
+             style="width: {{ progress_percent }}%;"
+             aria-valuenow="{{ progress_percent }}"
+             aria-valuemin="0"
+             aria-valuemax="100">
+          {{ progress_percent }}%
+        </div>
+      </div>
+    </div>
+
+    <!-- Сетка достижений -->
+    <div class="row gx-4 gx-lg-5 justify-content-center">
+      {% for achievement in achievements %}
+      <div class="col-lg-4 col-md-6 mb-5 d-flex align-items-stretch">
+        <div class="card h-100 shadow border-0 achievement-card text-center px-3 py-4" data-aos="zoom-in" data-aos-delay="{{ forloop.counter0|add:'1' }}00">
+          <div class="mb-3">
+            {% if achievement.unlocked %}
+              <i class="fas fa-trophy fa-3x text-warning"></i>
+            {% else %}
+              <i class="fas fa-lock fa-3x text-muted"></i>
+            {% endif %}
+          </div>
+          {% if achievement.unlocked %}
+            <h5 class="card-title fw-bold mb-2">{{ achievement.title }}</h5>
+            <p class="card-text text-muted">{{ achievement.description }}</p>
+            <span class="badge bg-success">Получено: {{ achievement.date_earned|date:"d.m.Y" }}</span>
+          {% else %}
+            <h5 class="card-title text-muted">Скрытое достижение</h5>
+            <p class="card-text text-muted">Разблокируй, чтобы узнать</p>
+            <span class="badge bg-secondary">Заблокировано</span>
+          {% endif %}
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- Подключение AOS для анимации -->
+<link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<script>
+  AOS.init();
+</script>
+
+<style>
+  .achievement-card {
+    transition: all 0.3s ease;
+    border-radius: 20px;
+    background-color: #ffffff;
+  }
+
+  .achievement-card:hover {
+    transform: translateY(-7px);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+  }
+
+  .badge {
+    font-size: 0.85rem;
+    margin-top: 10px;
+  }
+
+  .progress {
+    background-color: #e9ecef;
+    border-radius: 30px;
+  }
+
+  .progress-bar {
+    font-weight: bold;
+    font-size: 0.95rem;
+  }
+</style>
+{% endblock %}

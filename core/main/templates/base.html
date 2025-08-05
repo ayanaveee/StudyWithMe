@@ -3,12 +3,14 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+        <meta charset="UTF-8">
+        <title>{% block title %}Мой сайт{% endblock %}</title>
+        {% load static %}
+        <link href="{% static 'assets/css/styles.css' %}" rel="stylesheet" />
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
         <meta name="description" content="" />
         <meta name="author" content="" />
-        <title>Stylish Portfolio - Start Bootstrap Template</title>
         <!-- Favicon-->
         <link rel="icon" type="image/x-icon" href="{% static 'assets/favicon.ico' %}" />
         <!-- Font Awesome icons (free version)-->
@@ -24,39 +26,26 @@
         <!-- Navigation-->
         <a class="menu-toggle rounded" href="#"><i class="fas fa-bars"></i></a>
         <nav id="sidebar-wrapper">
-            <ul class="sidebar-nav">
-                <li class="sidebar-brand"><a href="#page-top">Start Bootstrap</a></li>
-                <li class="sidebar-nav-item"><a href="#page-top">Home</a></li>
-                <li class="sidebar-nav-item"><a href="#about">About</a></li>
-                <li class="sidebar-nav-item"><a href="#services">Services</a></li>
-                <li class="sidebar-nav-item"><a href="#portfolio">Portfolio</a></li>
-                <li class="sidebar-nav-item"><a href="#contact">Contact</a></li>
+           <ul class="sidebar-nav">
+                <li class="sidebar-brand"><a href="#page-top">Главное меню:</a></li>
+                <li class="sidebar-nav-item"><a href="{% url 'index' %}">Главная</a></li>
+                <li class="sidebar-nav-item"><a href="{% url 'about' %}">О нас</a></li>
+                <li class="sidebar-nav-item"><a href="{% url 'sessions' %}">Мои сессии</a></li>
+                <li class="sidebar-nav-item"><a href="{% url 'study_materials' %}">Учебные материалы</a></li>
+                <li class="sidebar-nav-item"><a href="{% url 'goals' %}">Цели</a></li>
+                <li class="sidebar-nav-item"><a href="{% url 'achievements' %}">Достижения</a></li>
+                <li class="sidebar-nav-item"><a href="#">Заметки</a></li>
+
+                {% if request.user.is_authenticated %}
+                    <li class="sidebar-nav-item"><a href="{% url 'profile' %}">Профиль</a></li>
+                    <li class="sidebar-nav-item"><a href="{% url 'user_logout' %}">Выйти</a></li>
+                {% else %}
+                    <li class="sidebar-nav-item"><a href="{% url 'user_login' %}">Вход</a></li>
+                    <li class="sidebar-nav-item"><a href="{% url 'user_register' %}">Регистрация</a></li>
+                {% endif %}
             </ul>
+
         </nav>
-        <!-- Header-->
-        <header class="masthead d-flex align-items-center">
-            <div class="container px-4 px-lg-5 text-center">
-                <h1 class="mb-1">Stylish Portfolio</h1>
-                <h3 class="mb-5"><em>A Free Bootstrap Theme by Start Bootstrap</em></h3>
-                <a class="btn btn-primary btn-xl" href="#about">Find Out More</a>
-            </div>
-        </header>
-        <!-- About-->
-        <section class="content-section bg-light" id="about">
-            <div class="container px-4 px-lg-5 text-center">
-                <div class="row gx-4 gx-lg-5 justify-content-center">
-                    <div class="col-lg-10">
-                        <h2>Stylish Portfolio is the perfect theme for your next project!</h2>
-                        <p class="lead mb-5">
-                            This theme features a flexible, UX friendly sidebar menu and stock photos from our friends at
-                            <a href="https://unsplash.com/">Unsplash</a>
-                            !
-                        </p>
-                        <a class="btn btn-dark btn-xl" href="#services">What We Offer</a>
-                    </div>
-                </div>
-            </div>
-        </section>
 
     {% block content %}
     {% endblock %}
@@ -75,7 +64,7 @@
                         <a class="social-link rounded-circle text-white" href="#!"><i class="icon-social-github"></i></a>
                     </li>
                 </ul>
-                <p class="text-muted small mb-0">Copyright &copy; Your Website 2023</p>
+                <p class="text-muted small mb-0">Copyright &copy; StudyWithMe 2025</p>
             </div>
         </footer>
         <!-- Scroll to Top Button-->
