@@ -1,120 +1,67 @@
 {% extends 'base.html' %}
 {% load static %}
-
 {% block content %}
+
+<h2>Избранные материалы</h2>
+
+<ul>
+  {% for favorite in favorites %}
+    <li class="favorite-item">
+      <div class="favorite-title">
+        • <a href="{% url 'favorite_material_detail' favorite.material.id %}">
+          {{ favorite.material.title }}
+        </a>
+      </div>
+
+      <form method="post" action="{% url 'remove_favorite' favorite.material.id %}" class="favorite-remove-form remove-form">
+        {% csrf_token %}
+        <button type="submit" class="remove-button" data-title="{{ favorite.material.title }}">Удалить из избранного</button>
+      </form>
+    </li>
+  {% empty %}
+    <li>У вас пока нет избранных материалов.</li>
+  {% endfor %}
+</ul>
+
+<script>
+  document.querySelectorAll('.remove-button').forEach(button => {
+    button.addEventListener('click', function(e) {
+      const title = this.dataset.title;
+      const confirmDelete = confirm(`Вы уверены, что хотите удалить "${title}" из избранных?`);
+      if (!confirmDelete) e.preventDefault();
+    });
+  });
+</script>
+
 <style>
-    body {
-        background: linear-gradient(to right, #667eea, #764ba2);
-        min-height: 100vh;
-    }
+  .favorite-item {
+    margin-bottom: 20px;
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+  }
 
-    .text-gradient {
-        background: linear-gradient(to right, #ffecd2 0%, #fcb69f 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-    }
+  .favorite-title {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 5px;
+  }
 
-    .card-link {
-        text-decoration: none;
-        color: inherit;
-    }
+  .favorite-remove-form {
+    margin-top: 5px;
+  }
 
-    .card-animated {
-        background: #ffffff;
-        border-radius: 16px;
-        padding: 20px;
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
-        box-shadow: 6px 6px 15px rgba(0, 0, 0, 0.1);
-        position: relative;
-        overflow: hidden;
-        min-height: 230px;
-    }
+  .favorite-remove-form button {
+    padding: 6px 10px;
+    background-color: white;
+    border: 1px solid black;
+    cursor: pointer;
+    font-size: 14px;
+  }
 
-    .card-animated::before {
-        content: "";
-        position: absolute;
-        top: -50%;
-        left: -50%;
-        width: 200%;
-        height: 200%;
-        background: conic-gradient(from 180deg at 50% 50%, #e0f7fa, #fce4ec, #fff3e0, #e0f7fa);
-        animation: rotate 6s linear infinite;
-        z-index: 0;
-        opacity: 0.07;
-    }
-
-    @keyframes rotate {
-        0% {transform: rotate(0deg);}
-        100% {transform: rotate(360deg);}
-    }
-
-    .card-content {
-        position: relative;
-        z-index: 1;
-    }
-
-    .card-animated:hover {
-        transform: scale(1.03);
-        box-shadow: 12px 12px 25px rgba(0, 0, 0, 0.15);
-    }
-
-    .card-title {
-        font-weight: 600;
-        font-size: 1.3rem;
-        margin-bottom: 0.5rem;
-        color: #333;
-    }
-
-    .card-text {
-        font-size: 0.95rem;
-        color: #555;
-    }
-
-    .added-at {
-        font-size: 0.8rem;
-        color: #888;
-        text-align: right;
-        margin-top: 1rem;
-    }
-
-    .container {
-        padding-top: 60px;
-        padding-bottom: 60px;
-    }
+  .favorite-remove-form button:hover {
+    background-color: #eee;
+  }
 </style>
 
-<div class="container">
-    <h2 class="mb-5 text-center display-5 fw-bold text-gradient">⭐ Мои избранные материалы ⭐</h2>
 
-    {% if favorites %}
-        <div class="row">
-            {% for fav in favorites %}
-                <div class="col-md-6 col-lg-4 mb-4">
-                    <a href="{% url 'study_material_detail' material_id=fav.material.pk %}" class="card-link">
-                        <div class="card-animated h-100">
-                            <div class="card-content">
-                                <h5 class="card-title">{{ fav.material.title }}</h5>
-                                <p class="card-text">
-                                    {{ fav.material.description|truncatewords:25 }}
-                                </p>
-                                <div class="added-at">
-                                    Добавлено {{ fav.added_at|date:"d M Y, H:i" }}
-                                </div>
-                            </div>
-                            <div class="added-at d-flex justify-content-between align-items-center mt-3">
-                                <form method="POST" action="{% url 'remove_favorite' fav.material.pk %}">
-                                    {% csrf_token %}
-                                    <button type="submit" class="btn btn-sm btn-outline-danger">✖</button>
-                                </form>
-
-                            </div>
-                        </div>
-                    </a>
-                </div>
-            {% endfor %}
-        </div>
-    {% else %}
-        <p class="text-center text-light fs-5 mt-5">У вас пока нет избранных материалов.</p>
-    {% endif %}
-</div>
 {% endblock %}

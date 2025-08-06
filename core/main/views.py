@@ -1,27 +1,35 @@
+from django.contrib import messages
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from .models import Achievement, StudySession, Note, Goal, StudyMaterialCategory, StudyMaterial, FavoriteMaterial
 from django.utils.timezone import now
 from .forms import  GoalForm
 from .forms import StudySessionForm
+from django.views.decorators.http import require_POST
+
 
 def study_materials_view(request):
     categories = StudyMaterialCategory.objects.prefetch_related('materials')
     return render(request, 'main/study_materials.html', {'categories': categories})
 
+
 def study_material_detail(request, pk):
     material = get_object_or_404(StudyMaterial, pk=pk)
     return render(request, 'main/study_material_detail.html', {'material': material})
 
+
 def index_view(request):
     return render(request, 'main/index.html')
+
 
 def about(request):
     return render(request, 'main/about.html')
 
+
 @login_required
 def sessions_view(request):
     return render(request, 'main/sessions.html')
+
 
 @login_required
 def goals_list(request):
@@ -42,6 +50,7 @@ def goals_list(request):
 
     return render(request, 'main/goals.html', {'form': form, 'goals': goals})
 
+
 @login_required
 def edit_goal(request, pk):
     goal = get_object_or_404(Goal, pk=pk, user=request.user)
@@ -55,6 +64,27 @@ def edit_goal(request, pk):
         form = GoalForm(instance=goal)
 
     return render(request, 'main/edit_goal.html', {'form': form, 'goal': goal})
+
+
+@login_required
+@require_POST
+def mark_goal_completed(request, pk):
+    goal = get_object_or_404(Goal, pk=pk, user=request.user)
+    goal.is_completed = True
+    goal.save()
+    messages.success(request, "Цель отмечена как выполненная.")
+    return redirect('goals')
+
+
+@login_required
+@require_POST
+def delete_goal(request, pk):
+    goal = get_object_or_404(Goal, pk=pk, user=request.user)
+    goal.delete()
+    messages.success(request, "Цель удалена.")
+    return redirect('goals')
+
+
 
 @login_required
 def achievements_view(request):
@@ -78,6 +108,7 @@ def achievements_view(request):
     }
     return render(request, 'main/achievements.html', context)
 
+
 def check_and_award_achievement(user):
     goals_count = Goal.objects.filter(user=user).count()
     if goals_count >= 5:
@@ -89,6 +120,7 @@ def check_and_award_achievement(user):
         if created:
             achievement.date_earned = timezone.now()
             achievement.save()
+
 
 @login_required
 def create_session(request):
@@ -103,6 +135,7 @@ def create_session(request):
     else:
         form = StudySessionForm()
     return render(request, 'main/create_session.html', {'form': form})
+
 
 def check_and_award_achievements(user):
     unlocked = Achievement.objects.filter(user=user).values_list('title', flat=True)
@@ -125,6 +158,7 @@ def check_and_award_achievements(user):
     if goals.exists() and "Цель достигнута" not in unlocked:
         Achievement.objects.create(user=user, title="Цель достигнута", description="Ты завершил одну из своих целей!")
 
+
 def study_material_detail_view(request, material_id):
     material = get_object_or_404(StudyMaterial, id=material_id)
     is_favorited = False
@@ -137,10 +171,12 @@ def study_material_detail_view(request, material_id):
     }
     return render(request, 'main/study_material_detail.html', context)
 
+
 @login_required
 def favorite_materials_view(request):
     favorites = FavoriteMaterial.objects.filter(user=request.user).select_related('material')
     return render(request, 'main/favorite_list.html', {'favorites': favorites})
+
 
 @login_required
 def add_to_favorites(request, material_id):
@@ -148,8 +184,19 @@ def add_to_favorites(request, material_id):
     FavoriteMaterial.objects.get_or_create(user=request.user, material=material)
     return redirect('study_material_detail', material_id=material.id)
 
+
 @login_required
 def remove_favorite(request, material_id):
     material = get_object_or_404(StudyMaterial, id=material_id)
-    FavoriteMaterial.objects.filter(user=request.user, material=material).delete()
-    return redirect('favorite_list')
+    favorite = FavoriteMaterial.objects.filter(user=request.user, material=material)
+    if favorite.exists():
+        favorite.delete()
+        messages.success(request, f'Вы удалили из избранных материал: "{material.title}"')
+    else:
+        messages.warning(request, 'Материал не найден в избранных.')
+    return redirect('favorite_materials')
+
+@login_required
+def favorite_material_detail_view(request, material_id):
+    material = get_object_or_404(StudyMaterial, id=material_id)
+    return render(request, 'main/favorite_material_detail.html', {'material': material})

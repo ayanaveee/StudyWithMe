@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+{% block content %}
+<style>
+  .material-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 30px;
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  }
+
+  .material-title {
+    text-align: center;
+    font-size: 28px;
+    font-weight: bold;
+    margin-bottom: 25px;
+  }
+
+  .material-description {
+    font-size: 17px;
+    line-height: 1.7;
+    text-align: justify;
+  }
+
+  .video-block {
+    margin-top: 30px;
+    text-align: center;
+  }
+
+  .back-link {
+    display: inline-block;
+    margin-top: 30px;
+    color: #007bff;
+    text-decoration: none;
+  }
+
+  .back-link:hover {
+    text-decoration: underline;
+  }
+
+</style>
+
+<div class="material-container">
+  <div class="material-title">{{ material.title }}</div>
+
+  <div class="material-description">
+    <p><strong>Описание:</strong> {{ material.description|safe }}</p>
+  </div>
+
+  {% if material.video %}
+    <div class="video-block">
+      {{ material.video|safe }}
+    </div>
+  {% endif %}
+
+  <a href="{% url 'favorite_materials' %}" class="back-link">← Назад к избранным</a>
+</div>
+{% endblock %}

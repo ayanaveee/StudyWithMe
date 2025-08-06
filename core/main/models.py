@@ -24,6 +24,7 @@ class StudySession(models.Model):
         verbose_name = 'Учебная сессия'
         verbose_name_plural = 'Учебные сессии'
 
+
 class Category(models.Model):
     title = models.CharField(max_length=100, verbose_name='Название')
 
@@ -33,6 +34,7 @@ class Category(models.Model):
     class Meta:
         verbose_name = 'Категория цели'
         verbose_name_plural = 'Категории целей'
+
 
 class Achievement(models.Model):
     user = models.ForeignKey(MyUser, on_delete=models.CASCADE, verbose_name='Пользователь')
@@ -48,6 +50,7 @@ class Achievement(models.Model):
         verbose_name = 'Достижение'
         verbose_name_plural = 'Достижения'
 
+
 class Goal(models.Model):
     user = models.ForeignKey(MyUser, on_delete=models.CASCADE, verbose_name='Пользователь')
     PRIORITY_CHOICES = [
@@ -60,6 +63,7 @@ class Goal(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='Дата начала')
     deadline = models.DateTimeField(verbose_name='Дата окончания')
     priority = models.CharField(max_length=10, choices=PRIORITY_CHOICES)
+    is_completed = models.BooleanField(default=False, verbose_name='Выполнено')
 
     def __str__(self):
         return f"{self.user.username}'s Goal – {self.title}"
@@ -67,6 +71,7 @@ class Goal(models.Model):
     class Meta:
         verbose_name = 'Цель'
         verbose_name_plural = 'Цели'
+
 
 class TopicProgress(models.Model):
     user = models.ForeignKey(MyUser, on_delete=models.CASCADE)
@@ -82,6 +87,7 @@ class TopicProgress(models.Model):
         verbose_name = "Прогресс по теме"
         verbose_name_plural = "Прогресс по темам"
 
+
 class FavoriteMaterial(models.Model):
     user = models.ForeignKey(MyUser, on_delete=models.CASCADE)
     material = models.ForeignKey('StudyMaterial', on_delete=models.CASCADE)
@@ -93,6 +99,7 @@ class FavoriteMaterial(models.Model):
     class Meta:
         verbose_name = "Избранный материал"
         verbose_name_plural = "Избранные материалы"
+
 
 class Note(models.Model):
     user = models.ForeignKey(MyUser, on_delete=models.CASCADE, verbose_name='Пользователь')
@@ -107,13 +114,14 @@ class Note(models.Model):
         verbose_name = 'Заметка'
         verbose_name_plural = 'Заметки'
 
+
 class StudyMaterial(models.Model):
     title = models.CharField(max_length=255, verbose_name="Название")
     description = models.TextField(verbose_name="Описание")
-    video = models.TextField(blank=True, null=True,verbose_name='Видео')
+    video = models.TextField(blank=True, null=True, verbose_name='Видео')
     created_by = models.ForeignKey(MyUser, on_delete=models.CASCADE, verbose_name="Автор")
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата создания")
-    category = models.ForeignKey('StudyMaterialCategory',on_delete=models.SET_NULL, null=True, blank=True,related_name='materials', verbose_name="Категория")
+    category = models.ForeignKey('StudyMaterialCategory', on_delete=models.SET_NULL, null=True, blank=True, related_name='materials', verbose_name="Категория")
 
     def __str__(self):
         return self.title
@@ -121,6 +129,7 @@ class StudyMaterial(models.Model):
     class Meta:
         verbose_name = "Учебный материал"
         verbose_name_plural = "Учебные материалы"
+
 
 class StudyMaterialCategory(models.Model):
     title = CharField(max_length=100)

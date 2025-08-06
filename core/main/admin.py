@@ -17,11 +17,13 @@ class StudySessionAdmin(admin.ModelAdmin):
     search_fields = ('user__username', 'goal__title', 'note')
     list_filter = ('start_time', 'end_time', 'goal__category')
 
+
 @admin.register(Goal)
 class GoalAdmin(admin.ModelAdmin):
     list_display = ('user', 'title', 'category', 'created_at', 'deadline')
     search_fields = ('user__username', 'title')
     list_filter = ('category', 'deadline')
+
 
 @admin.register(Note)
 class NoteAdmin(admin.ModelAdmin):
@@ -29,16 +31,19 @@ class NoteAdmin(admin.ModelAdmin):
     search_fields = ('user__username', 'content')
     list_filter = ('created_at', 'updated_at')
 
+
 @admin.register(Achievement)
 class AchievementAdmin(admin.ModelAdmin):
     list_display = ('user', 'title', 'code', 'date_earned')
     search_fields = ('user__username', 'title', 'code')
     list_filter = ('date_earned',)
 
+
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
     list_display = ('title',)
     search_fields = ('title',)
+
 
 @admin.register(StudyMaterial)
 class StudyMaterialAdmin(admin.ModelAdmin):
@@ -46,16 +51,19 @@ class StudyMaterialAdmin(admin.ModelAdmin):
     search_fields = ('title', 'created_by__username')
     list_filter = ('category', 'created_at')
 
+
 @admin.register(StudyMaterialCategory)
 class StudyMaterialCategoryAdmin(admin.ModelAdmin):
     list_display = ('title',)
     search_fields = ('title',)
+
 
 @admin.register(TopicProgress)
 class TopicProgressAdmin(admin.ModelAdmin):
     list_display = ('user', 'material', 'completed', 'completed_at')
     search_fields = ('user__username', 'material__title')
     list_filter = ('completed', 'completed_at')
+
 
 @admin.register(FavoriteMaterial)
 class FavoriteMaterialAdmin(admin.ModelAdmin):
