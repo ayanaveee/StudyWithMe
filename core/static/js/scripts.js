@@ -25,6 +25,28 @@ window.addEventListener('DOMContentLoaded', event => {
             _toggleMenuIcon();
         })
     });
+document.addEventListener('DOMContentLoaded', function () {
+  const quotes = [
+    '«Учись сегодня — меняй завтра.»',
+    '«Каждый день — шанс стать лучше.»',
+    '«Успех — это сумма маленьких усилий.»',
+    '«Настойчивость побеждает талант.»',
+    '«Начни делать, и путь появится.»'
+  ];
+
+  const quoteElem = document.getElementById('daily-quote');
+  const btn = document.getElementById('newQuoteBtn');
+
+  btn.addEventListener('click', function () {
+    // Получаем случайную цитату, отличную от текущей
+    let newQuote;
+    do {
+      newQuote = quotes[Math.floor(Math.random() * quotes.length)];
+    } while (newQuote === quoteElem.textContent);
+
+    quoteElem.textContent = newQuote;
+  });
+});
 
     function _toggleMenuIcon() {
         const menuToggleBars = document.body.querySelector('.menu-toggle > .fa-bars');

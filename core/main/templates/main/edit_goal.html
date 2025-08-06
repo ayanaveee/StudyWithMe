@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block content %}
+<section class="page-section text-white" style="background: linear-gradient(to right, #667eea, #764ba2); min-height: 80vh;">
+  <div class="container px-4 px-lg-5 py-5">
+    <h2 class="page-section-heading text-center text-uppercase text-white mb-4">Редактировать цель</h2>
+
+    <div class="row justify-content-center">
+      <div class="col-lg-6">
+        <form method="post" novalidate>
+          {% csrf_token %}
+
+          <div class="mb-4">
+            <label for="{{ form.title.id_for_label }}" class="form-label fw-semibold">{{ form.title.label }}</label>
+            {{ form.title|add_class:"form-control" }}
+            {% if form.title.errors %}
+              <div class="text-danger small mt-1">{{ form.title.errors|striptags }}</div>
+            {% endif %}
+          </div>
+
+          <div class="mb-4">
+            <label for="{{ form.category.id_for_label }}" class="form-label fw-semibold">{{ form.category.label }}</label>
+            {{ form.category|add_class:"form-select" }}
+            {% if form.category.errors %}
+              <div class="text-danger small mt-1">{{ form.category.errors|striptags }}</div>
+            {% endif %}
+          </div>
+
+          <div class="mb-4">
+            <label for="{{ form.deadline.id_for_label }}" class="form-label fw-semibold">{{ form.deadline.label }}</label>
+            {{ form.deadline|add_class:"form-control" }}
+            {% if form.deadline.errors %}
+              <div class="text-danger small mt-1">{{ form.deadline.errors|striptags }}</div>
+            {% endif %}
+          </div>
+
+          <div class="mb-4">
+            <label for="{{ form.priority.id_for_label }}" class="form-label fw-semibold">{{ form.priority.label }}</label>
+            {{ form.priority|add_class:"form-select" }}
+            {% if form.priority.errors %}
+              <div class="text-danger small mt-1">{{ form.priority.errors|striptags }}</div>
+            {% endif %}
+          </div>
+
+          <div class="d-grid">
+            <button type="submit" class="btn btn-outline-light btn-lg">Сохранить</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

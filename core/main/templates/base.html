@@ -50,50 +50,18 @@
             {% endif %}
         </ul>
     </nav>
-
-    <!-- Основной контент страницы -->
     <main>
         {% block content %}
         {% endblock %}
     </main>
 <!-- Footer -->
-<footer class="footer text-center py-5">
-  <div class="container px-4 px-lg-5">
-    <h2 class="footer-title mb-3">Твой ежедневный заряд мотивации ⚡</h2>
-
-    <div class="quote-box mx-auto">
-      <p class="footer-quote mb-0" id="daily-quote">«Учись сегодня — меняй завтра.»</p>
-    </div>
-
-    <button id="newQuoteBtn" class="btn-glow mt-4">✨ Новая цитата</button>
-
-    <p class="footer-footer-text mt-5 mb-0">© 2025 <strong>StudyWithMe</strong> — вместе к вершинам!</p>
+<footer class="footer text-center py-4 bg-light">
+  <div class="container">
+    <p class="text-muted mb-1">© 2025 StudyWithMe</p>
+    <small class="text-muted">Создано с ❤️ для студентов</small>
   </div>
 </footer>
-<script>
-  const quotes = [
-    "Учись сегодня — меняй завтра.",
-    "Продуктивность — это не случайность, а выбор.",
-    "Каждый шаг приближает тебя к цели.",
-    "Маленькие привычки — большие результаты.",
-    "Учёба — это инвестиция в себя.",
-    "Вдохновляйся и вдохновляй других!",
-  ];
-
-  const quoteEl = document.getElementById('daily-quote');
-  const btn = document.getElementById('newQuoteBtn');
-
-  btn.addEventListener('click', () => {
-    quoteEl.style.opacity = 0;
-    setTimeout(() => {
-      const randomIndex = Math.floor(Math.random() * quotes.length);
-      quoteEl.textContent = `«${quotes[randomIndex]}»`;
-      quoteEl.style.opacity = 1;
-    }, 300);
-  });
-</script>
-
-    <!-- Scroll to Top Button -->
+  <!-- Scroll to Top Button -->
     <a class="scroll-to-top rounded" href="#page-top"><i class="fas fa-angle-up"></i></a>
 
     <!-- Bootstrap core JS -->

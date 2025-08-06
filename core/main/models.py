@@ -50,10 +50,16 @@ class Achievement(models.Model):
 
 class Goal(models.Model):
     user = models.ForeignKey(MyUser, on_delete=models.CASCADE, verbose_name='Пользователь')
+    PRIORITY_CHOICES = [
+        ('low', 'Низкий'),
+        ('medium', 'Средний'),
+        ('high', 'Высокий'),
+    ]
     title = models.CharField(max_length=255, verbose_name='Цель')
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, verbose_name='Категория')
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='Дата начала')
     deadline = models.DateTimeField(verbose_name='Дата окончания')
+    priority = models.CharField(max_length=10, choices=PRIORITY_CHOICES)
 
     def __str__(self):
         return f"{self.user.username}'s Goal – {self.title}"

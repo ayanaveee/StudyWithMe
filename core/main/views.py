@@ -2,9 +2,10 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from .models import Achievement, StudySession, Note, Goal, StudyMaterialCategory, StudyMaterial, FavoriteMaterial
 from django.utils.timezone import now
+from .forms import  GoalForm
 from .forms import StudySessionForm
 
-def study_materials(request):
+def study_materials_view(request):
     categories = StudyMaterialCategory.objects.prefetch_related('materials')
     return render(request, 'main/study_materials.html', {'categories': categories})
 
@@ -12,24 +13,20 @@ def study_material_detail(request, pk):
     material = get_object_or_404(StudyMaterial, pk=pk)
     return render(request, 'main/study_material_detail.html', {'material': material})
 
-def index(request):
+def index_view(request):
     return render(request, 'main/index.html')
 
 def about(request):
     return render(request, 'main/about.html')
 
-def sessions(request):
+@login_required
+def sessions_view(request):
     return render(request, 'main/sessions.html')
 
 @login_required
-def goals_view(request):
-    goals = Goal.objects.filter(user=request.user)
-    return render(request, 'main/goals.html', {'goals': goals})
-
-@login_required
-def weekly_goals(request):
-    goals = Goal.objects.filter(user=request.user)  # если есть авторизация
+def goals_list(request):
     form = GoalForm()
+    goals = Goal.objects.filter(user=request.user)
 
     if request.method == 'POST':
         form = GoalForm(request.POST)
@@ -37,12 +34,27 @@ def weekly_goals(request):
             goal = form.save(commit=False)
             goal.user = request.user
             goal.save()
-            return redirect('weekly_goals')
+            return redirect('goals')
+        else:
+            print(form.errors)
+    else:
+        form = GoalForm()
 
-    return render(request, 'your_template.html', {
-        'goals': goals,
-        'form': form,
-    })
+    return render(request, 'main/goals.html', {'form': form, 'goals': goals})
+
+@login_required
+def edit_goal(request, pk):
+    goal = get_object_or_404(Goal, pk=pk, user=request.user)
+
+    if request.method == 'POST':
+        form = GoalForm(request.POST, instance=goal)
+        if form.is_valid():
+            form.save()
+            return redirect('goals')
+    else:
+        form = GoalForm(instance=goal)
+
+    return render(request, 'main/edit_goal.html', {'form': form, 'goal': goal})
 
 @login_required
 def achievements_view(request):
@@ -65,6 +77,18 @@ def achievements_view(request):
         'progress_percent': progress_percent,
     }
     return render(request, 'main/achievements.html', context)
+
+def check_and_award_achievement(user):
+    goals_count = Goal.objects.filter(user=user).count()
+    if goals_count >= 5:
+        achievement, created = Achievement.objects.get_or_create(
+            user=user,
+            title="Пять целей",
+            defaults={'description': 'Добавлено 5 целей', 'date_earned': timezone.now()}
+        )
+        if created:
+            achievement.date_earned = timezone.now()
+            achievement.save()
 
 @login_required
 def create_session(request):
@@ -123,3 +147,9 @@ def add_to_favorites(request, material_id):
     material = get_object_or_404(StudyMaterial, id=material_id)
     FavoriteMaterial.objects.get_or_create(user=request.user, material=material)
     return redirect('study_material_detail', material_id=material.id)
+
+@login_required
+def remove_favorite(request, material_id):
+    material = get_object_or_404(StudyMaterial, id=material_id)
+    FavoriteMaterial.objects.filter(user=request.user, material=material).delete()
+    return redirect('favorite_list')
