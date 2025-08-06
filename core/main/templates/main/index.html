@@ -2,132 +2,73 @@
 {% load static %}
 
 {% block content %}
-  <!-- Header-->
-  <header class="masthead d-flex align-items-center">
-    <div class="container px-4 px-lg-5 text-center">
-      <h1 class="mb-1">Добро пожаловать в StudyWithMe</h1>
-      <h3 class="mb-5"><em>твой личный трекер по учебной продуктивности</em></h3>
-      <a class="btn btn-primary btn-xl" href="#about">Подробнее...</a>
-    </div>
-  </header>
+<!-- Hero Section -->
+<section class="hero-section d-flex align-items-center text-white" style="background: linear-gradient(to right, #667eea, #764ba2); min-height: 90vh;">
+  <div class="container text-center">
+    <h1 class="display-4 fw-bold">StudyWithMe</h1>
+    <p class="lead mb-4">Твой личный помощник в мире учебной продуктивности</p>
+    <a href="{% url 'about' %}" class="btn btn-light btn-lg shadow-sm px-4 py-2">Узнать больше</a>
+  </div>
+</section>
 
-  <section class="content-section bg-primary text-white text-center" id="services">
-    <div class="container px-4 px-lg-5">
-      <div class="content-section-heading">
-        <h2 class="mb-5">Преимущества</h2>
-      </div>
-      <div class="row gx-4 gx-lg-5">
-        <div class="col-lg-3 col-md-6 mb-5 mb-lg-0">
-          <span class="service-icon rounded-circle mx-auto mb-3">
-            <i class="fa-solid fa-bullseye"></i>
-          </span>
-          <h4><strong>Планируй цели</strong></h4>
-          <p class="text-faded mb-0">Ставь чёткие цели и двигайся к ним шаг за шагом.</p>
-        </div>
-        <div class="col-lg-3 col-md-6 mb-5 mb-lg-0">
-          <span class="service-icon rounded-circle mx-auto mb-3">
-            <i class="icon-pencil"></i>
-          </span>
-          <h4><strong>Веди заметки</strong></h4>
-          <p class="text-faded mb-0">Фиксируй идеи, мысли и полезную информацию в одном месте.</p>
-        </div>
-        <div class="col-lg-3 col-md-6 mb-5 mb-md-0">
-          <span class="service-icon rounded-circle mx-auto mb-3">
-            <i class="icon-like"></i>
-          </span>
-          <h4><strong>Получай достижения</strong></h4>
-          <p class="text-faded mb-0">
-            Отслеживай прогресс и радуйся
-            <i class="fas fa-heart"></i>
-            каждому успеху!
-          </p>
-        </div>
-        <div class="col-lg-3 col-md-6">
-          <span class="service-icon rounded-circle mx-auto mb-3">
-            <i class="fa-solid fa-note-sticky"></i>
-          </span>
-          <h4><strong>Следи за прогрессом</strong></h4>
-          <p class="text-faded mb-0">Анализируй результаты и расти каждый день.</p>
+<!-- Features Section -->
+<section class="features-section py-5 bg-light text-center">
+  <div class="container">
+    <h2 class="mb-5">Что ты получишь</h2>
+    <div class="row g-4">
+      <div class="col-md-6 col-lg-3">
+        <div class="card h-100 border-0 shadow-sm">
+          <div class="card-body">
+            <i class="fa-solid fa-bullseye fa-2x mb-3 text-primary"></i>
+            <h5 class="card-title">Планируй цели</h5>
+            <p class="card-text">Чётко ставь задачи и шаг за шагом продвигайся к результату.</p>
+          </div>
         </div>
       </div>
-    </div>
-  </section>
-
-  <!-- Callout-->
-  <section class="callout">
-    <div class="container px-4 px-lg-5 text-center">
-      <h2 class="mx-auto mb-5">
-        Welcome to
-        <em>your</em>
-        next website!
-      </h2>
-      <a class="btn btn-primary btn-xl" href="https://startbootstrap.com/theme/stylish-portfolio/">Download Now!</a>
-    </div>
-  </section>
-
-  <!-- Portfolio-->
-  <section class="content-section" id="portfolio">
-    <div class="container px-4 px-lg-5">
-      <div class="content-section-heading text-center">
-        <h3 class="text-secondary mb-0">Portfolio</h3>
-        <h2 class="mb-5">Recent Projects</h2>
+      <div class="col-md-6 col-lg-3">
+        <div class="card h-100 border-0 shadow-sm">
+          <div class="card-body">
+            <i class="fa-solid fa-pen-nib fa-2x mb-3 text-success"></i>
+            <h5 class="card-title">Создавай заметки</h5>
+            <p class="card-text">Фиксируй важную информацию, чтобы ничего не упустить.</p>
+          </div>
+        </div>
       </div>
-      <div class="row gx-0">
-        <div class="col-lg-6">
-          <a class="portfolio-item" href="#!">
-            <div class="caption">
-              <div class="caption-content">
-                <div class="h2">Stationary</div>
-                <p class="mb-0">A yellow pencil with envelopes on a clean, blue backdrop!</p>
-              </div>
-            </div>
-            <img class="img-fluid" src="{% static 'assets/img/portfolio-1.jpg' %}" alt="..." />
-          </a>
+      <div class="col-md-6 col-lg-3">
+        <div class="card h-100 border-0 shadow-sm">
+          <div class="card-body">
+            <i class="fa-solid fa-medal fa-2x mb-3 text-warning"></i>
+            <h5 class="card-title">Достижения</h5>
+            <p class="card-text">Разблокируй ачивки и следи за уровнем своего прогресса.</p>
+          </div>
         </div>
-        <div class="col-lg-6">
-          <a class="portfolio-item" href="#!">
-            <div class="caption">
-              <div class="caption-content">
-                <div class="h2">Ice Cream</div>
-                <p class="mb-0">A dark blue background with a colored pencil, a clip, and a tiny ice cream cone!</p>
-              </div>
-            </div>
-            <img class="img-fluid" src="{% static 'assets/img/portfolio-2.jpg' %}" alt="..." />
-          </a>
-        </div>
-        <div class="col-lg-6">
-          <a class="portfolio-item" href="#!">
-            <div class="caption">
-              <div class="caption-content">
-                <div class="h2">Strawberries</div>
-                <p class="mb-0">Strawberries are such a tasty snack, especially with a little sugar on top!</p>
-              </div>
-            </div>
-            <img class="img-fluid" src="{% static 'assets/img/portfolio-3.jpg' %}" alt="..." />
-          </a>
-        </div>
-        <div class="col-lg-6">
-          <a class="portfolio-item" href="#!">
-            <div class="caption">
-              <div class="caption-content">
-                <div class="h2">Workspace</div>
-                <p class="mb-0">A yellow workspace with some scissors, pencils, and other objects.</p>
-              </div>
-            </div>
-            <img class="img-fluid" src="{% static 'assets/img/portfolio-4.jpg' %}" alt="..." />
-          </a>
+      </div>
+      <div class="col-md-6 col-lg-3">
+        <div class="card h-100 border-0 shadow-sm">
+          <div class="card-body">
+            <i class="fa-solid fa-chart-line fa-2x mb-3 text-danger"></i>
+            <h5 class="card-title">Аналитика</h5>
+            <p class="card-text">Следи за продуктивностью и улучши свои учебные привычки.</p>
+          </div>
         </div>
       </div>
     </div>
-  </section>
+  </div>
+</section>
 
-  <!-- Call to Action-->
-  <section class="content-section bg-primary text-white">
-    <div class="container px-4 px-lg-5 text-center">
-      <h2 class="mb-4">The buttons below are impossible to resist...</h2>
-      <a class="btn btn-xl btn-light me-4" href="#!">Click Me!</a>
-      <a class="btn btn-xl btn-dark" href="#!">Look at Me!</a>
-    </div>
-  </section>
+<!-- Call to Action -->
+<section class="cta-section py-5 text-white" style="background: #222;">
+  <div class="container text-center">
+    <h2 class="mb-4">Готова сделать свой учебный процесс эффективнее?</h2>
+    <a href="{% url 'user_register' %}" class="btn btn-primary btn-lg">Начать сейчас</a>
+  </div>
+</section>
 
+<!-- Footer -->
+<footer class="footer text-center py-4 bg-light">
+  <div class="container">
+    <p class="text-muted mb-1">© 2025 StudyWithMe</p>
+    <small class="text-muted">Создано с ❤️ для студентов</small>
+  </div>
+</footer>
 {% endblock %}

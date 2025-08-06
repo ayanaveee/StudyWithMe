@@ -2,100 +2,37 @@
 {% load static %}
 {% block content %}
 
-<style>
-  body {
-    font-family: 'Poppins', sans-serif;
-    background-image: url('/static/assets/img/bg-masthead.jpg');
-    background-size: cover;
-    background-attachment: fixed;
-    background-position: center;
-    background-repeat: no-repeat;
-    padding: 40px;
-  }
+<section class="page-section text-white mb-0" id="goals" style="background: linear-gradient(to right, #667eea, #764ba2);">
+  <div class="container px-4 px-lg-5">
+    <h2 class="page-section-heading text-center text-uppercase text-white">Цели на неделю</h2>
+    <div class="divider-custom divider-light">
+      <div class="divider-custom-line"></div>
+      <div class="divider-custom-icon"><i class="fas fa-star"></i></div>
+      <div class="divider-custom-line"></div>
+    </div>
 
-  .goals-section {
-    background: rgba(255, 255, 255, 0.9);
-    border-radius: 20px;
-    padding: 30px;
-    max-width: 800px;
-    margin: auto;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
-    animation: fadeIn 1s ease;
-  }
+    <div class="row justify-content-center">
+      <div class="col-lg-8">
+        <div class="form-group">
+          <textarea id="goalDesc" class="form-control mb-3" placeholder="Описание цели"></textarea>
+          <input id="goalDeadline" type="date" class="form-control mb-3" placeholder="Дедлайн" />
+          <select id="goalPriority" class="form-select mb-3">
+            <option value="low">Низкий приоритет</option>
+            <option value="medium">Средний приоритет</option>
+            <option value="high">Высокий приоритет</option>
+          </select>
+          <div class="d-grid">
+            <button onclick="addGoal()" class="btn btn-xl btn-outline-light">Добавить цель</button>
+          </div>
+        </div>
 
-  h1 {
-    text-align: center;
-    margin-bottom: 30px;
-    font-size: 2.5rem;
-    font-weight: bold;
-  }
-
-  .card {
-    border-radius: 12px;
-    padding: 20px;
-    margin-bottom: 20px;
-    background-color: #f8f9fa;
-    transition: transform 0.2s ease;
-  }
-
-  .card:hover {
-    transform: translateY(-5px);
-  }
-
-  .badge {
-    font-size: 0.9rem;
-    padding: 6px 12px;
-    border-radius: 20px;
-  }
-
-  .goal-priority-high {
-    border-left: 5px solid #dc3545;
-  }
-
-  .goal-priority-medium {
-    border-left: 5px solid #ffc107;
-  }
-
-  .goal-priority-low {
-    border-left: 5px solid #28a745;
-  }
-
-  @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(30px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-
-  .no-goals {
-    text-align: center;
-    color: #888;
-    font-style: italic;
-    margin-top: 30px;
-  }
-</style>
-
-<div class="goals-section">
-  <h1>🎯 Цели на неделю</h1>
-
-  {% if goals %}
-    {% for goal in goals %}
-      <div class="card goal-priority-{{ goal.priority }}">
-        <h4>{{ goal.title }}</h4>
-        <p><strong>Дедлайн:</strong> {{ goal.deadline|date:"d M Y" }}</p>
-        <p><strong>Описание:</strong> {{ goal.description }}</p>
-        <p><strong>Приоритет:</strong>
-          {% if goal.priority == 'high' %}
-            <span class="badge bg-danger">Высокий</span>
-          {% elif goal.priority == 'medium' %}
-            <span class="badge bg-warning text-dark">Средний</span>
-          {% else %}
-            <span class="badge bg-success">Низкий</span>
-          {% endif %}
-        </p>
+        <ul id="goalsList" class="list-unstyled mt-4"></ul>
       </div>
-    {% endfor %}
-  {% else %}
-    <p class="no-goals">У тебя пока нет целей. Добавь первую 📝</p>
-  {% endif %}
-</div>
+    </div>
+  </div>
+</section>
+
+<link rel="stylesheet" href="{% static 'css/goals.css' %}">
+<script src="{% static 'js/goals.js' %}"></script>
 
 {% endblock %}

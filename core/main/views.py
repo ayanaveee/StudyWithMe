@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from .models import Achievement, StudySession, Note, Goal, StudyMaterialCategory, StudyMaterial
+from .models import Achievement, StudySession, Note, Goal, StudyMaterialCategory, StudyMaterial, FavoriteMaterial
 from django.utils.timezone import now
 from .forms import StudySessionForm
 
@@ -35,9 +35,9 @@ def weekly_goals(request):
         form = GoalForm(request.POST)
         if form.is_valid():
             goal = form.save(commit=False)
-            goal.user = request.user  # если у тебя есть поле user
+            goal.user = request.user
             goal.save()
-            return redirect('weekly_goals')  # имя твоего url
+            return redirect('weekly_goals')
 
     return render(request, 'your_template.html', {
         'goals': goals,
@@ -101,6 +101,25 @@ def check_and_award_achievements(user):
     if goals.exists() and "Цель достигнута" not in unlocked:
         Achievement.objects.create(user=user, title="Цель достигнута", description="Ты завершил одну из своих целей!")
 
-def study_material_detail_view(request, pk):
-    material = get_object_or_404(StudyMaterial, pk=pk)
-    return render(request, 'main/study_material_detail.html', {'material': material})
+def study_material_detail_view(request, material_id):
+    material = get_object_or_404(StudyMaterial, id=material_id)
+    is_favorited = False
+    if request.user.is_authenticated:
+        is_favorited = FavoriteMaterial.objects.filter(user=request.user, material=material).exists()
+
+    context = {
+        'material': material,
+        'is_favorited': is_favorited,
+    }
+    return render(request, 'main/study_material_detail.html', context)
+
+@login_required
+def favorite_materials_view(request):
+    favorites = FavoriteMaterial.objects.filter(user=request.user).select_related('material')
+    return render(request, 'main/favorite_list.html', {'favorites': favorites})
+
+@login_required
+def add_to_favorites(request, material_id):
+    material = get_object_or_404(StudyMaterial, id=material_id)
+    FavoriteMaterial.objects.get_or_create(user=request.user, material=material)
+    return redirect('study_material_detail', material_id=material.id)

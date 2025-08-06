@@ -2,103 +2,126 @@
 {% load static %}
 {% block content %}
 
-<title>Учебные материалы</title>
+<section class="hero-section d-flex align-items-center text-white" style="background: linear-gradient(to right, #667eea, #764ba2); min-height: 90vh;">
+  <div class="container text-center">
+    <h1 class="text-white" style="font-weight: 800; font-size: 48px; margin-bottom: 10px;">Категории учебных материалов</h1>
+  </div>
+</section>
+
 <style>
-    .category-block {
-        margin-bottom: 20px;
-        border: 1px solid #ddd;
-        border-radius: 10px;
-        overflow: hidden;
-        transition: all 0.3s ease;
-        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
-    }
-        h1.page-title {
-        text-align: center;
-        font-size: 36px;
-        font-weight: 700;
-        color: #2a5db0;
-        margin-bottom: 40px;
-        position: relative;
-        display: inline-block;
-        padding-bottom: 10px;
-    }
 
-    h1.page-title::after {
-        content: '';
-        position: absolute;
-        width: 60%;
-        height: 3px;
-        background: linear-gradient(to right, #2a5db0, #6ba6ff);
-        bottom: 0;
-        left: 50%;
-        transform: translateX(-50%);
-        border-radius: 2px;
-    }
+h1.page-title {
+    display: block;
+    margin: 40px auto 30px auto;
+    text-align: center;
+    max-width: 600px;
+    font-size: 36px;
+    font-weight: 700;
+    color: #2a5db0;
+    position: relative;
+    padding-bottom: 10px;
+}
 
+  h1.page-title::after {
+      content: '';
+      position: absolute;
+      width: 60%;
+      height: 3px;
+      background: linear-gradient(to right, #2a5db0, #6ba6ff);
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      border-radius: 2px;
+  }
 
-    .category-header {
-        background-color: #f5f5f5;
-        padding: 15px 20px;
-        cursor: pointer;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
+  /* Категории */
+  .category-block {
+      margin: 0 auto 25px auto;
+      max-width: 700px;
+      border-radius: 20px;
+      background-color: #ffffff;
+      box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+      overflow: hidden;
+      transition: all 0.3s ease;
+      cursor: pointer;
+  }
 
-    .category-header h2 {
-        margin: 0;
-        font-size: 20px;
-        color: #333;
-    }
+  .category-block:hover {
+      box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+      transform: translateY(-5px);
+  }
 
-    .arrow {
-        transition: transform 0.3s ease;
-    }
+  .category-header {
+      background-color: #f5f7fa;
+      padding: 20px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      user-select: none;
+  }
 
-    .arrow.rotate {
-        transform: rotate(90deg);
-    }
+  .category-header h2 {
+      margin: 0;
+      font-size: 22px;
+      color: #2a5db0;
+      font-weight: 700;
+  }
 
-    .materials-list {
-        display: none;
-        padding: 10px 20px;
-        background-color: white;
-    }
+  .arrow {
+      font-size: 24px;
+      color: #6ba6ff;
+      transition: transform 0.3s ease;
+  }
 
-    ul {
-        list-style: none;
-        padding-left: 0;
-    }
+  .arrow.rotate {
+      transform: rotate(90deg);
+  }
 
-    ul li {
-        margin: 8px 0;
-    }
+  .materials-list {
+      max-height: 0;
+      overflow: hidden;
+      opacity: 0;
+      transition: max-height 0.4s ease, opacity 0.4s ease;
+      background-color: #fff;
+      padding: 0 30px;
+  }
 
-    ul li a {
-        text-decoration: none;
-        color: #2a5db0;
-        font-weight: 500;
-    }
+  .materials-list.open {
+      max-height: 500px; /* достаточно большое значение */
+      opacity: 1;
+      padding: 15px 30px 25px 30px;
+  }
 
-    ul li a:hover {
-        text-decoration: underline;
-    }
+  ul {
+      list-style: none;
+      padding-left: 0;
+      margin: 0;
+  }
 
-    h1 {
-        font-size: 28px;
-        margin-bottom: 30px;
-        color: #222;
-    }
+  ul li {
+      margin: 12px 0;
+  }
+
+  ul li a {
+      text-decoration: none;
+      color: #2a5db0;
+      font-weight: 600;
+      font-size: 17px;
+      transition: color 0.3s ease;
+  }
+
+  ul li a:hover {
+      text-decoration: underline;
+      color: #1d3f87;
+  }
 </style>
-
-<h1 class="page-title">Категории учебных материалов</h1>
 {% for category in categories %}
 <div class="category-block">
     <div class="category-header" onclick="toggleCategory(this)">
         <h2>{{ category.title }}</h2>
-        <span class="arrow">&#9654;</span>
+        <span class="arrow {% if forloop.first %}rotate{% endif %}">&#9654;</span>
     </div>
-    <div class="materials-list">
+    <div class="materials-list {% if forloop.first %}open{% endif %}">
         <ul>
             {% for material in category.materials.all %}
                 <li><a href="{% url 'study_material_detail' material.pk %}">{{ material.title }}</a></li>
@@ -115,14 +138,16 @@
         const arrow = header.querySelector('.arrow');
         const content = header.nextElementSibling;
 
-        if (content.style.display === 'block') {
-            content.style.display = 'none';
+        if (content.classList.contains('open')) {
+            content.classList.remove('open');
             arrow.classList.remove('rotate');
         } else {
-            document.querySelectorAll('.materials-list').forEach(el => el.style.display = 'none');
+            // Закрываем все
+            document.querySelectorAll('.materials-list').forEach(el => el.classList.remove('open'));
             document.querySelectorAll('.arrow').forEach(el => el.classList.remove('rotate'));
 
-            content.style.display = 'block';
+            // Открываем выбранный
+            content.classList.add('open');
             arrow.classList.add('rotate');
         }
     }

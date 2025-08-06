@@ -25,12 +25,64 @@
         font-size: 18px;
         color: #555;
         line-height: 1.6;
+        margin-bottom: 30px;
     }
 
     .icon-book {
         font-size: 48px;
         color: #6c63ff;
         margin-bottom: 20px;
+    }
+
+    .timer {
+        font-size: 28px;
+        margin-bottom: 20px;
+        color: #222;
+    }
+
+    .timer-buttons button {
+        margin: 0 10px;
+        padding: 10px 20px;
+        font-size: 16px;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+
+    .start-btn {
+        background-color: #6c63ff;
+        color: white;
+    }
+
+    .pause-btn {
+        background-color: #ffb347;
+        color: white;
+    }
+
+    .reset-btn {
+        background-color: #ff6f61;
+        color: white;
+    }
+
+    .timer-buttons button:hover {
+        opacity: 0.9;
+    }
+
+    .favorite-btn {
+        background-color: #eee;
+        color: #444;
+        border: none;
+        padding: 10px 20px;
+        font-size: 16px;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: background-color 0.3s, color 0.3s;
+    }
+
+    .favorite-btn.active {
+        background-color: #ff6b81;
+        color: white;
     }
 
     @keyframes fadeIn {
@@ -51,7 +103,61 @@
     <p class="lesson-description">
         <strong>Описание:</strong> {{ material.description }}
     </p>
-    <p> {{ material.video| safe }}</p>
-</div>
-{% endblock %}
+    <p> {{ material.video | safe }}</p>
 
+    <form method="post" action="{% url 'add_to_favorites' material.id %}" id="favoriteForm">
+        {% csrf_token %}
+        <button type="submit" id="favoriteBtn" class="favorite-btn">💖 Добавить в избранное</button>
+    </form>
+
+    <div class="timer" id="timer">00:00:00</div>
+    <div class="timer-buttons">
+        <button class="start-btn" onclick="startTimer()">Старт</button>
+        <button class="pause-btn" onclick="pauseTimer()">Пауза</button>
+        <button class="reset-btn" onclick="resetTimer()">Сброс</button>
+    </div>
+</div>
+
+<script>
+    let timer;
+    let seconds = 0;
+    let running = false;
+
+    function updateTimerDisplay() {
+        let hrs = String(Math.floor(seconds / 3600)).padStart(2, '0');
+        let mins = String(Math.floor((seconds % 3600) / 60)).padStart(2, '0');
+        let secs = String(seconds % 60).padStart(2, '0');
+        document.getElementById('timer').innerText = `${hrs}:${mins}:${secs}`;
+    }
+
+    function startTimer() {
+        if (!running) {
+            running = true;
+            timer = setInterval(() => {
+                seconds++;
+                updateTimerDisplay();
+            }, 1000);
+        }
+    }
+
+    function pauseTimer() {
+        running = false;
+        clearInterval(timer);
+    }
+
+    function resetTimer() {
+        running = false;
+        clearInterval(timer);
+        seconds = 0;
+        updateTimerDisplay();
+    }
+
+    updateTimerDisplay();
+
+    // Плавное добавление эффекта "в избранное"
+    document.getElementById('favoriteForm').addEventListener('submit', function(event) {
+        const btn = document.getElementById('favoriteBtn');
+        btn.classList.add('active');
+    });
+</script>
+{% endblock %}

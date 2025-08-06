@@ -9,10 +9,16 @@ class StudySession(models.Model):
     goal = models.ForeignKey('Goal', on_delete=models.CASCADE, verbose_name='Цель')
     note = models.TextField(blank=True, null=True, verbose_name='Заметка')
     start_time = models.DateTimeField(verbose_name='Дата создания')
-    end_date = models.DateTimeField(verbose_name='Дата сессии')
+    end_time = models.DateTimeField(verbose_name='Дата сессии')
+    duration = models.DurationField(blank=True, null=True, verbose_name='Длительность')
+
+    def save(self, *args, **kwargs):
+        if self.start_time and self.end_time:
+            self.duration = self.end_time - self.start_time
+        super().save(*args, **kwargs)
 
     def __str__(self):
-        return f"Session of {self.user.username} on {self.end_date}"
+        return f"Session of {self.user.username} on {self.end_time}"
 
     class Meta:
         verbose_name = 'Учебная сессия'
@@ -30,6 +36,7 @@ class Category(models.Model):
 
 class Achievement(models.Model):
     user = models.ForeignKey(MyUser, on_delete=models.CASCADE, verbose_name='Пользователь')
+    code = models.CharField(max_length=50, unique=True, verbose_name="Код условия", default='default_code')
     title = models.CharField(max_length=100, verbose_name='Название достижения')
     description = models.TextField(blank=True, verbose_name='Описание достижения')
     date_earned = models.DateTimeField(auto_now_add=True, verbose_name='Дата получения')
@@ -54,6 +61,32 @@ class Goal(models.Model):
     class Meta:
         verbose_name = 'Цель'
         verbose_name_plural = 'Цели'
+
+class TopicProgress(models.Model):
+    user = models.ForeignKey(MyUser, on_delete=models.CASCADE)
+    material = models.ForeignKey('StudyMaterial', on_delete=models.CASCADE)
+    completed = models.BooleanField(default=False)
+    completed_at = models.DateTimeField(null=True, blank=True)
+
+    def __str__(self):
+        status = "Изучено" if self.completed else "В процессе"
+        return f"{self.user.username} — {self.material.title} ({status})"
+
+    class Meta:
+        verbose_name = "Прогресс по теме"
+        verbose_name_plural = "Прогресс по темам"
+
+class FavoriteMaterial(models.Model):
+    user = models.ForeignKey(MyUser, on_delete=models.CASCADE)
+    material = models.ForeignKey('StudyMaterial', on_delete=models.CASCADE)
+    added_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.user.username} — избранное: {self.material.title}"
+
+    class Meta:
+        verbose_name = "Избранный материал"
+        verbose_name_plural = "Избранные материалы"
 
 class Note(models.Model):
     user = models.ForeignKey(MyUser, on_delete=models.CASCADE, verbose_name='Пользователь')
@@ -84,7 +117,7 @@ class StudyMaterial(models.Model):
         verbose_name_plural = "Учебные материалы"
 
 class StudyMaterialCategory(models.Model):
-    title = CharField(max_length=20)
+    title = CharField(max_length=100)
 
     class Meta:
         verbose_name = "Предмет"

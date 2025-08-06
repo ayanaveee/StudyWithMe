@@ -1,4 +1,5 @@
 from django.contrib.auth.decorators import login_required
+
 from .forms import MyUserRegisterForm, MyUserLoginForm
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import MyUser, OTP
@@ -39,7 +40,7 @@ def user_login(request):
                     send_mail(subject=' Одноразовый код',
                               message= f'Ваш одноразовый пароль: {otp_code}\nНикому не показывайте!',
                               from_email=settings.DEFAULT_FROM_EMAIL,
-                              recipient_list=[user.email],
+                              recipient_list=['ayanaabdyraeva@gmail.com'],
                               fail_silently=False,
                               )
                     messages.success(request, 'Однаразовый код отправлен вам на почту.')

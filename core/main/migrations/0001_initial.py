@@ -87,7 +87,6 @@ class Migration(migrations.Migration):
                 ('title', models.CharField(max_length=255, verbose_name='Название')),
                 ('description', models.TextField(verbose_name='Описание')),
                 ('video', models.FileField(upload_to='videos/', verbose_name='Видео')),
-                ('topic', models.CharField(max_length=100, verbose_name='Тема')),
                 ('created_at', models.DateTimeField(auto_now_add=True, verbose_name='Дата создания')),
                 ('created_by', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL, verbose_name='Автор')),
                 ('category', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='materials', to='main.studymaterialcategory', verbose_name='Категория')),
