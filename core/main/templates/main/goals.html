@@ -2,224 +2,100 @@
 {% load static %}
 {% block content %}
 
-  <meta charset="UTF-8" />
-  <title>Цели на неделю</title>
-  <style>
-    body {
-      font-family: 'Poppins', sans-serif;
-      background-image: url('/static/assets/img/bg-masthead.jpg');
-      background-size: cover;
-      background-attachment: fixed;
-      background-position: center;
-      background-repeat: no-repeat;
-      padding: 40px;
-      max-width: 800px;
-      margin: auto;
-      color: #333;
-    }
+<style>
+  body {
+    font-family: 'Poppins', sans-serif;
+    background-image: url('/static/assets/img/bg-masthead.jpg');
+    background-size: cover;
+    background-attachment: fixed;
+    background-position: center;
+    background-repeat: no-repeat;
+    padding: 40px;
+  }
 
-    h1 {
-      text-align: center;
-      margin-bottom: 30px;
-      animation: fadeIn 1s ease-in;
-    }
+  .goals-section {
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 20px;
+    padding: 30px;
+    max-width: 800px;
+    margin: auto;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    animation: fadeIn 1s ease;
+  }
 
-    input, select, button, textarea {
-      font-size: 16px;
-      padding: 10px;
-      margin: 5px 0;
-      width: 100%;
-      box-sizing: border-box;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-    }
+  h1 {
+    text-align: center;
+    margin-bottom: 30px;
+    font-size: 2.5rem;
+    font-weight: bold;
+  }
 
-    textarea {
-      resize: vertical;
-    }
+  .card {
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 20px;
+    background-color: #f8f9fa;
+    transition: transform 0.2s ease;
+  }
 
-    button {
-      background-color: #6c63ff;
-      color: white;
-      border: none;
-      cursor: pointer;
-    }
+  .card:hover {
+    transform: translateY(-5px);
+  }
 
-    button:hover {
-      background-color: #5a52d4;
-    }
+  .badge {
+    font-size: 0.9rem;
+    padding: 6px 12px;
+    border-radius: 20px;
+  }
 
-    ul {
-      list-style: none;
-      padding: 0;
-      margin-top: 20px;
-    }
+  .goal-priority-high {
+    border-left: 5px solid #dc3545;
+  }
 
-    .goal-item {
-      padding: 15px;
-      margin-bottom: 10px;
-      border-radius: 8px;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      animation: slideIn 0.5s ease-out;
-    }
+  .goal-priority-medium {
+    border-left: 5px solid #ffc107;
+  }
 
-    .completed {
-      background-color: #e0fbe0 !important;
-      text-decoration: line-through;
-    }
+  .goal-priority-low {
+    border-left: 5px solid #28a745;
+  }
 
-    .low {
-      background-color: #fff9c4;
-    }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
 
-    .medium {
-      background-color: #c8e6c9;
-    }
+  .no-goals {
+    text-align: center;
+    color: #888;
+    font-style: italic;
+    margin-top: 30px;
+  }
+</style>
 
-    .high {
-      background-color: #ffcdd2;
-    }
+<div class="goals-section">
+  <h1>🎯 Цели на неделю</h1>
 
-    .actions {
-      display: flex;
-      gap: 8px;
-    }
+  {% if goals %}
+    {% for goal in goals %}
+      <div class="card goal-priority-{{ goal.priority }}">
+        <h4>{{ goal.title }}</h4>
+        <p><strong>Дедлайн:</strong> {{ goal.deadline|date:"d M Y" }}</p>
+        <p><strong>Описание:</strong> {{ goal.description }}</p>
+        <p><strong>Приоритет:</strong>
+          {% if goal.priority == 'high' %}
+            <span class="badge bg-danger">Высокий</span>
+          {% elif goal.priority == 'medium' %}
+            <span class="badge bg-warning text-dark">Средний</span>
+          {% else %}
+            <span class="badge bg-success">Низкий</span>
+          {% endif %}
+        </p>
+      </div>
+    {% endfor %}
+  {% else %}
+    <p class="no-goals">У тебя пока нет целей. Добавь первую 📝</p>
+  {% endif %}
+</div>
 
-    .status-btn {
-      background-color: #ff7675;
-      border: none;
-      color: white;
-      padding: 8px 12px;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-
-    .status-btn.completed {
-      background-color: #4caf50;
-    }
-
-    .delete-btn {
-      background-color: #ccc;
-      color: #333;
-    }
-
-    .delete-btn:hover {
-      background-color: #aaa;
-    }
-
-    .edit-btn {
-      background-color: #ffd54f;
-      color: black;
-    }
-
-    .edit-btn:hover {
-      background-color: #fbc02d;
-    }
-
-    @keyframes slideIn {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
-    }
-  </style>
-</head>
-<body>
-  <h1>Цели на неделю</h1>
-
-  <textarea id="goalDesc" placeholder="Описание цели"></textarea>
-  <input id="goalDeadline" type="date" placeholder="Дедлайн" />
-  <select id="goalPriority">
-    <option value="low">Низкий приоритет</option>
-    <option value="medium">Средний приоритет</option>
-    <option value="high">Высокий приоритет</option>
-  </select>
-  <button onclick="addGoal()">Добавить цель</button>
-
-  <ul id="goalsList"></ul>
-
-  <script>
-    const descInput = document.getElementById('goalDesc');
-    const deadlineInput = document.getElementById('goalDeadline');
-    const priorityInput = document.getElementById('goalPriority');
-    const goalsList = document.getElementById('goalsList');
-
-    function addGoal() {
-      const desc = descInput.value.trim();
-      const deadline = deadlineInput.value;
-      const priority = priorityInput.value;
-
-      if (!desc || !deadline || !priority) {
-        alert("Заполните все поля");
-        return;
-      }
-
-      const li = document.createElement('li');
-      li.className = `goal-item ${priority}`;
-
-      const content = document.createElement('div');
-      content.className = 'goal-content';
-      content.innerHTML = `
-        <strong>Цель:</strong> <span class="goal-desc">${desc}</span><br/>
-        <strong>Дедлайн:</strong> <span class="goal-deadline">${deadline}</span><br/>
-        <strong>Приоритет:</strong> <span class="goal-priority">${priority}</span><br/>
-      `;
-
-      const actions = document.createElement('div');
-      actions.className = 'actions';
-
-      const statusBtn = document.createElement('button');
-      statusBtn.textContent = 'Выполнено';
-      statusBtn.className = 'status-btn';
-      statusBtn.onclick = () => {
-        const done = li.classList.toggle('completed');
-        statusBtn.textContent = done ? 'Не выполнено' : 'Выполнено';
-        statusBtn.classList.toggle('completed', done);
-      };
-
-      const deleteBtn = document.createElement('button');
-      deleteBtn.textContent = 'Удалить';
-      deleteBtn.className = 'status-btn delete-btn';
-      deleteBtn.onclick = () => goalsList.removeChild(li);
-
-      const editBtn = document.createElement('button');
-      editBtn.textContent = 'Редактировать';
-      editBtn.className = 'status-btn edit-btn';
-      editBtn.onclick = () => editGoal(li);
-
-      actions.appendChild(statusBtn);
-      actions.appendChild(editBtn);
-      actions.appendChild(deleteBtn);
-      li.appendChild(content);
-      li.appendChild(actions);
-      goalsList.appendChild(li);
-
-      descInput.value = '';
-      deadlineInput.value = '';
-      priorityInput.value = 'low';
-    }
-
-    function editGoal(li) {
-      const descSpan = li.querySelector('.goal-desc');
-      const deadlineSpan = li.querySelector('.goal-deadline');
-      const prioritySpan = li.querySelector('.goal-priority');
-
-      const newDesc = prompt('Изменить описание:', descSpan.textContent);
-      const newDeadline = prompt('Изменить дедлайн:', deadlineSpan.textContent);
-      const newPriority = prompt('Изменить приоритет (low, medium, high):', prioritySpan.textContent);
-
-      if (newDesc && newDeadline && newPriority) {
-        descSpan.textContent = newDesc;
-        deadlineSpan.textContent = newDeadline;
-        prioritySpan.textContent = newPriority;
-
-        li.className = `goal-item ${newPriority}` + (li.classList.contains('completed') ? ' completed' : '');
-      }
-    }
-  </script>
 {% endblock %}

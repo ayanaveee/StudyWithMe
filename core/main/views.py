@@ -5,7 +5,7 @@ from django.utils.timezone import now
 from .forms import StudySessionForm
 
 def study_materials(request):
-    categories = StudyMaterialCategory.objects.all().prefetch_related('study_material_set')
+    categories = StudyMaterialCategory.objects.prefetch_related('materials')
     return render(request, 'main/study_materials.html', {'categories': categories})
 
 def study_material_detail(request, pk):
@@ -21,8 +21,28 @@ def about(request):
 def sessions(request):
     return render(request, 'main/sessions.html')
 
-def goals(request):
-    return render(request, 'main/goals.html')
+@login_required
+def goals_view(request):
+    goals = Goal.objects.filter(user=request.user)
+    return render(request, 'main/goals.html', {'goals': goals})
+
+@login_required
+def weekly_goals(request):
+    goals = Goal.objects.filter(user=request.user)  # если есть авторизация
+    form = GoalForm()
+
+    if request.method == 'POST':
+        form = GoalForm(request.POST)
+        if form.is_valid():
+            goal = form.save(commit=False)
+            goal.user = request.user  # если у тебя есть поле user
+            goal.save()
+            return redirect('weekly_goals')  # имя твоего url
+
+    return render(request, 'your_template.html', {
+        'goals': goals,
+        'form': form,
+    })
 
 @login_required
 def achievements_view(request):
@@ -80,3 +100,7 @@ def check_and_award_achievements(user):
     goals = Goal.objects.filter(user=user, end_date__lt=now().date())
     if goals.exists() and "Цель достигнута" not in unlocked:
         Achievement.objects.create(user=user, title="Цель достигнута", description="Ты завершил одну из своих целей!")
+
+def study_material_detail_view(request, pk):
+    material = get_object_or_404(StudyMaterial, pk=pk)
+    return render(request, 'main/study_material_detail.html', {'material': material})

@@ -19,14 +19,14 @@ class StudySession(models.Model):
         verbose_name_plural = 'Учебные сессии'
 
 class Category(models.Model):
-    name = models.CharField(max_length=100, verbose_name='Название')
+    title = models.CharField(max_length=100, verbose_name='Название')
 
     def __str__(self):
-        return self.name
+        return self.title
 
     class Meta:
-        verbose_name = 'Категория'
-        verbose_name_plural = 'Категории'
+        verbose_name = 'Категория цели'
+        verbose_name_plural = 'Категории целей'
 
 class Achievement(models.Model):
     user = models.ForeignKey(MyUser, on_delete=models.CASCADE, verbose_name='Пользователь')
@@ -44,13 +44,12 @@ class Achievement(models.Model):
 class Goal(models.Model):
     user = models.ForeignKey(MyUser, on_delete=models.CASCADE, verbose_name='Пользователь')
     title = models.CharField(max_length=255, verbose_name='Цель')
-    related_to = models.ForeignKey('self', on_delete=models.SET_NULL, null=True, blank=True, verbose_name='Подцель')
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, verbose_name='Категория')
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='Дата начала')
     deadline = models.DateTimeField(verbose_name='Дата окончания')
 
     def __str__(self):
-        return f"{self.user.username}'s Goal – {self.target}"
+        return f"{self.user.username}'s Goal – {self.title}"
 
     class Meta:
         verbose_name = 'Цель'
@@ -72,10 +71,10 @@ class Note(models.Model):
 class StudyMaterial(models.Model):
     title = models.CharField(max_length=255, verbose_name="Название")
     description = models.TextField(verbose_name="Описание")
-    video = models.FileField(upload_to='videos/', verbose_name='Видео')
-    topic = models.CharField(max_length=100, verbose_name="Тема")
+    video = models.TextField(blank=True, null=True,verbose_name='Видео')
     created_by = models.ForeignKey(MyUser, on_delete=models.CASCADE, verbose_name="Автор")
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата создания")
+    category = models.ForeignKey('StudyMaterialCategory',on_delete=models.SET_NULL, null=True, blank=True,related_name='materials', verbose_name="Категория")
 
     def __str__(self):
         return self.title
@@ -88,5 +87,5 @@ class StudyMaterialCategory(models.Model):
     title = CharField(max_length=20)
 
     class Meta:
-        verbose_name = "Категория материала"
-        verbose_name_plural = "Категории материалов"
+        verbose_name = "Предмет"
+        verbose_name_plural = "Предметы"

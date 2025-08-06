@@ -1,18 +1,57 @@
 {% extends 'base.html' %}
 {% load static %}
+
 {% block content %}
+<style>
+    .lesson-container {
+        max-width: 700px;
+        margin: 50px auto;
+        background-color: #f9f9f9;
+        border-radius: 20px;
+        padding: 40px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        text-align: center;
+        animation: fadeIn 1s ease-in-out;
+    }
 
-    <title>{{ material.topic }}</title>
-    <h1>{{ material.topic }}</h1>
-    <p><strong>Описание:</strong> {{ material.description }}</p>
+    .lesson-title {
+        font-size: 36px;
+        margin-bottom: 25px;
+        color: #333;
+        font-weight: 700;
+    }
 
-    {% if material.video %}
-        <video width="600" controls>
-            <source src="{{ material.video.url }}" type="video/mp4">
-            Ваш браузер не поддерживает видео.
-        </video>
-    {% endif %}
+    .lesson-description {
+        font-size: 18px;
+        color: #555;
+        line-height: 1.6;
+    }
 
-    <p><a href="{% url 'study_materials' %}">← Назад к категориям</a></p>
+    .icon-book {
+        font-size: 48px;
+        color: #6c63ff;
+        margin-bottom: 20px;
+    }
 
+    @keyframes fadeIn {
+        0% {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        100% {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+</style>
+
+<div class="lesson-container">
+    <div class="icon-book">📘</div>
+    <h1 class="lesson-title">{{ material.title }}</h1>
+    <p class="lesson-description">
+        <strong>Описание:</strong> {{ material.description }}
+    </p>
+    <p> {{ material.video| safe }}</p>
+</div>
 {% endblock %}
+

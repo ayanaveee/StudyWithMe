@@ -1,7 +1,6 @@
 from .models import Achievement, StudySession
 from django.utils import timezone
 
-
 def check_and_award_achievements(user):
     sessions_count = StudySession.objects.filter(user=user).count()
 
