@@ -93,7 +93,6 @@ def achievements_view(request):
     user_level = completed_goals_count // 10 + 1
     progress_percent = (completed_goals_count % 10) * 10
 
-    # Получаем достижения (если есть другие)
     all_achievements = Achievement.objects.filter(user=user).order_by('-date_earned')
 
     achievements_list = [{

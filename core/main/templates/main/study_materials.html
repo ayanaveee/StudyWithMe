@@ -4,69 +4,86 @@
 
 <section class="hero-section d-flex align-items-center text-white" style="background: linear-gradient(to right, #667eea, #764ba2); min-height: 30vh;">
   <div class="container text-center">
-    <h1 class="text-white" style="font-weight: 800; font-size: 48px; margin-bottom: 10px;">Категории учебных материалов</h1>
+    <h1 class="text-white fw-bold display-4 mb-3">Категории учебных материалов</h1>
+    <p class="lead text-light">Изучай темы легко, быстро и по красоте 💼📘</p>
   </div>
-    <div class="custom-wave">
-  <svg viewBox="0 0 1440 320"><path fill="#ffffff" fill-opacity="1" d="M0,160L40,144C80,128,160,96,240,96C320,96,400,128,480,133.3C560,139,640,117,720,117.3C800,117,880,139,960,133.3C1040,128,1120,96,1200,74.7C1280,53,1360,43,1400,37.3L1440,32L1440,320L1400,320C1360,320,1280,320,1200,320C1120,320,1040,320,960,320C880,320,800,320,720,320C640,320,560,320,480,320C400,320,320,320,240,320C160,320,80,320,40,320L0,320Z"></path></svg>
-</div>
-
+  <div class="custom-wave">
+    <svg viewBox="0 0 1440 320"><path fill="#ffffff" fill-opacity="1" d="M0,160L40,144C80,128,160,96,240,96C320,96,400,128,480,133.3C560,139,640,117,720,117.3C800,117,880,139,960,133.3C1040,128,1120,96,1200,74.7C1280,53,1360,43,1400,37.3L1440,32L1440,320L1400,320C1360,320,1280,320,1200,320C1120,320,1040,320,960,320C880,320,800,320,720,320C640,320,560,320,480,320C400,320,320,320,240,320C160,320,80,320,40,320L0,320Z"></path></svg>
+  </div>
 </section>
 
+<div class="container py-5">
+  <h2 class="page-title">Выбери категорию 👇</h2>
+
+  {% for category in categories %}
+  <div class="category-block">
+      <div class="category-header" onclick="toggleCategory(this)">
+          <h2>{{ category.title }}</h2>
+          <span class="arrow {% if forloop.first %}rotate{% endif %}">&#9654;</span>
+      </div>
+      <div class="materials-list {% if forloop.first %}open{% endif %}">
+          <ul>
+              {% for material in category.materials.all %}
+                  <li><a href="{% url 'study_material_detail' material.pk %}">{{ material.title }}</a></li>
+              {% empty %}
+                  <li class="text-muted">Нет материалов</li>
+              {% endfor %}
+          </ul>
+      </div>
+  </div>
+  {% endfor %}
+</div>
+
 <style>
+  .page-title {
+      text-align: center;
+      font-size: 36px;
+      font-weight: 700;
+      color: #2a5db0;
+      position: relative;
+      padding-bottom: 12px;
+      margin-bottom: 40px;
+  }
 
-h1.page-title {
-    display: block;
-    margin: 40px auto 30px auto;
-    text-align: center;
-    max-width: 600px;
-    font-size: 36px;
-    font-weight: 700;
-    color: #2a5db0;
-    position: relative;
-    padding-bottom: 10px;
-}
-
-  h1.page-title::after {
+  .page-title::after {
       content: '';
       position: absolute;
-      width: 60%;
-      height: 3px;
+      width: 60px;
+      height: 4px;
       background: linear-gradient(to right, #2a5db0, #6ba6ff);
       bottom: 0;
       left: 50%;
       transform: translateX(-50%);
-      border-radius: 2px;
+      border-radius: 4px;
   }
 
   .category-block {
       margin: 0 auto 25px auto;
-      max-width: 700px;
       border-radius: 20px;
-      background-color: #ffffff;
-      box-shadow: 0 15px 35px rgba(0,0,0,0.1);
-      overflow: hidden;
+      background: #ffffff;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
       transition: all 0.3s ease;
       cursor: pointer;
+      overflow: hidden;
   }
 
   .category-block:hover {
-      box-shadow: 0 20px 40px rgba(0,0,0,0.15);
-      transform: translateY(-5px);
+      box-shadow: 0 25px 45px rgba(0, 0, 0, 0.15);
+      transform: translateY(-4px);
   }
 
   .category-header {
-      background-color: #f5f7fa;
-      padding: 20px 30px;
+      background-color: #f4f8fc;
+      padding: 22px 30px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      user-select: none;
   }
 
   .category-header h2 {
-      margin: 0;
       font-size: 22px;
       color: #2a5db0;
+      margin: 0;
       font-weight: 700;
   }
 
@@ -84,21 +101,20 @@ h1.page-title {
       max-height: 0;
       overflow: hidden;
       opacity: 0;
-      transition: max-height 0.4s ease, opacity 0.4s ease;
-      background-color: #fff;
-      padding: 0 30px;
+      transition: max-height 0.4s ease, opacity 0.4s ease, padding 0.3s ease;
+      background: #fff;
   }
 
   .materials-list.open {
-      max-height: 500px; /* достаточно большое значение */
+      max-height: 500px;
       opacity: 1;
-      padding: 15px 30px 25px 30px;
+      padding: 20px 30px 30px 30px;
   }
 
   ul {
-      list-style: none;
       padding-left: 0;
       margin: 0;
+      list-style: none;
   }
 
   ul li {
@@ -114,46 +130,27 @@ h1.page-title {
   }
 
   ul li a:hover {
-      text-decoration: underline;
       color: #1d3f87;
+      text-decoration: underline;
   }
 </style>
-{% for category in categories %}
-<div class="category-block">
-    <div class="category-header" onclick="toggleCategory(this)">
-        <h2>{{ category.title }}</h2>
-        <span class="arrow {% if forloop.first %}rotate{% endif %}">&#9654;</span>
-    </div>
-    <div class="materials-list {% if forloop.first %}open{% endif %}">
-        <ul>
-            {% for material in category.materials.all %}
-                <li><a href="{% url 'study_material_detail' material.pk %}">{{ material.title }}</a></li>
-            {% empty %}
-                <li>Нет материалов</li>
-            {% endfor %}
-        </ul>
-    </div>
-</div>
-{% endfor %}
 
 <script>
-    function toggleCategory(header) {
-        const arrow = header.querySelector('.arrow');
-        const content = header.nextElementSibling;
+  function toggleCategory(header) {
+      const arrow = header.querySelector('.arrow');
+      const content = header.nextElementSibling;
 
-        if (content.classList.contains('open')) {
-            content.classList.remove('open');
-            arrow.classList.remove('rotate');
-        } else {
-            // Закрываем все
-            document.querySelectorAll('.materials-list').forEach(el => el.classList.remove('open'));
-            document.querySelectorAll('.arrow').forEach(el => el.classList.remove('rotate'));
+      if (content.classList.contains('open')) {
+          content.classList.remove('open');
+          arrow.classList.remove('rotate');
+      } else {
+          document.querySelectorAll('.materials-list').forEach(el => el.classList.remove('open'));
+          document.querySelectorAll('.arrow').forEach(el => el.classList.remove('rotate'));
 
-            // Открываем выбранный
-            content.classList.add('open');
-            arrow.classList.add('rotate');
-        }
-    }
+          content.classList.add('open');
+          arrow.classList.add('rotate');
+      }
+  }
 </script>
 
 {% endblock %}

@@ -3,79 +3,52 @@
 
 {% block content %}
 <style>
+    body {
+        background: linear-gradient(to right, #667eea, #764ba2);
+        margin: 0;
+        padding: 0;
+        font-family: 'Segoe UI', sans-serif;
+    }
+
     .lesson-container {
-        max-width: 700px;
-        margin: 50px auto;
+        max-width: 900px; /* увеличена ширина */
+        margin: 60px auto;
         background-color: #f9f9f9;
-        border-radius: 20px;
-        padding: 40px;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        border-radius: 25px;
+        padding: 60px;
+        box-shadow: 0 6px 30px rgba(0, 0, 0, 0.2);
         text-align: center;
         animation: fadeIn 1s ease-in-out;
     }
 
     .lesson-title {
-        font-size: 36px;
-        margin-bottom: 25px;
+        font-size: 42px; /* больше заголовок */
+        margin-bottom: 30px;
         color: #333;
-        font-weight: 700;
+        font-weight: 800;
+        line-height: 1.4;
     }
 
     .lesson-description {
-        font-size: 18px;
+        font-size: 20px; /* увеличен текст */
         color: #555;
-        line-height: 1.6;
-        margin-bottom: 30px;
+        line-height: 2; /* увеличен межстрочный интервал */
+        margin-bottom: 40px;
     }
 
     .icon-book {
-        font-size: 48px;
+        font-size: 60px;
         color: #6c63ff;
-        margin-bottom: 20px;
-    }
-
-    .timer {
-        font-size: 28px;
-        margin-bottom: 20px;
-        color: #222;
-    }
-
-    .timer-buttons button {
-        margin: 0 10px;
-        padding: 10px 20px;
-        font-size: 16px;
-        border: none;
-        border-radius: 8px;
-        cursor: pointer;
-        transition: background-color 0.3s;
-    }
-
-    .start-btn {
-        background-color: #6c63ff;
-        color: white;
-    }
-
-    .pause-btn {
-        background-color: #ffb347;
-        color: white;
-    }
-
-    .reset-btn {
-        background-color: #ff6f61;
-        color: white;
-    }
-
-    .timer-buttons button:hover {
-        opacity: 0.9;
+        margin-bottom: 25px;
     }
 
     .favorite-btn {
         background-color: #eee;
         color: #444;
         border: none;
-        padding: 10px 20px;
-        font-size: 16px;
-        border-radius: 8px;
+        padding: 12px 26px;
+        font-size: 18px;
+        border-radius: 10px;
         cursor: pointer;
         transition: background-color 0.3s, color 0.3s;
     }
@@ -103,7 +76,7 @@
     <p class="lesson-description">
         <strong>Описание:</strong> {{ material.description }}
     </p>
-    <p> {{ material.video | safe }}</p>
+    <p>{{ material.video | safe }}</p>
 
     <form method="post" action="{% url 'add_to_favorites' material.id %}" id="favoriteForm">
         {% csrf_token %}
@@ -147,7 +120,6 @@
 
     updateTimerDisplay();
 
-    // Плавное добавление эффекта "в избранное"
     document.getElementById('favoriteForm').addEventListener('submit', function(event) {
         const btn = document.getElementById('favoriteBtn');
         btn.classList.add('active');

@@ -133,20 +133,36 @@
       </div>
     </div>
 
-    <div class="row g-4 mb-4">
-      <div class="col-md-12">
-        <div class="info-block">
-          <h5>🏆 Статистика</h5>
-          <div class="row text-center text-md-start">
-            {% if user.profile %}
-              <strong>Уровень:</strong> {{ user.profile.level }}
-            {% else %}
-              <strong>Уровень:</strong> Нет данных
-            {% endif %}
+   <div class="row g-4 mb-4">
+  <div class="col-md-12">
+    <div class="info-block p-4 rounded shadow-sm bg-light text-dark">
+      <h4 class="mb-3 text-success fw-bold"><i class="fas fa-chart-line me-2"></i>Твоя статистика</h4>
+
+      {% if user.profile %}
+        <div class="row align-items-center">
+          <div class="col-md-4 text-md-start text-center mb-3 mb-md-0">
+            <p class="mb-1 fs-5"><strong>🎯 Уровень:</strong> {{ user.profile.level }}</p>
+          </div>
+          <div class="col-md-8">
+            <div class="progress" style="height: 22px;">
+              <div class="progress-bar bg-success progress-bar-striped progress-bar-animated"
+                   role="progressbar"
+                   style="width: {{ progress_percent }}%;"
+                   aria-valuenow="{{ progress_percent }}"
+                   aria-valuemin="0"
+                   aria-valuemax="100">
+                {{ progress_percent }}%
+              </div>
+            </div>
           </div>
         </div>
-      </div>
+      {% else %}
+        <p><strong>Уровень:</strong> Нет данных</p>
+      {% endif %}
     </div>
+  </div>
+</div>
+
 
     <hr class="my-4">
 

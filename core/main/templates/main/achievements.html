@@ -26,28 +26,37 @@
 
     <!-- Сетка достижений -->
     <div class="row gx-3 gy-4 justify-content-center">
-      {% for achievement in achievements %}
-      <div class="col-6 col-sm-4 col-md-3 col-lg-2 d-flex align-items-stretch">
-        <div class="card achievement-card text-center shadow-sm w-100" data-aos="zoom-in" data-aos-delay="{{ forloop.counter0|add:'1' }}00">
-          <div class="icon mb-2 mt-3">
-            {% if achievement.unlocked %}
-              <i class="fas fa-trophy fa-3x text-warning"></i>
-            {% else %}
-              <i class="fas fa-lock fa-3x text-muted"></i>
-            {% endif %}
-          </div>
+      {% if achievements %}
+        {% for achievement in achievements %}
           {% if achievement.unlocked %}
-            <h6 class="fw-bold mb-1">{{ achievement.title }}</h6>
-            <p class="text-muted small mb-1">{{ achievement.description }}</p>
-            <span class="badge bg-success mb-2">Получено: {{ achievement.date_earned|date:"d.m.Y" }}</span>
-          {% else %}
-            <h6 class="text-muted">Скрытое достижение</h6>
-            <p class="text-muted small mb-1">Разблокируй, чтобы узнать</p>
-            <span class="badge bg-secondary mb-2">Заблокировано</span>
+          <div class="col-6 col-sm-4 col-md-3 col-lg-2 d-flex align-items-stretch">
+            <div class="card achievement-card text-center shadow-sm w-100" data-aos="zoom-in" data-aos-delay="{{ forloop.counter0|add:'1' }}00">
+              <div class="icon mb-2 mt-3">
+                <i class="fas fa-trophy fa-3x text-warning"></i>
+              </div>
+              <h6 class="fw-bold mb-1">{{ achievement.title }}</h6>
+              <p class="text-muted small mb-1">{{ achievement.description }}</p>
+              <span class="badge bg-success mb-2">Получено: {{ achievement.date_earned|date:"d.m.Y" }}</span>
+
+              <!-- Прогресс по каждой цели -->
+              {% if achievement.progress_current is not None and achievement.progress_total is not None and achievement.progress_percent is not None %}
+              <div class="progress mx-auto mt-2" style="width: 80%; height: 15px;">
+                <div class="progress-bar bg-info" role="progressbar"
+                     style="width: {{ achievement.progress_percent }}%;"
+                     aria-valuenow="{{ achievement.progress_current }}"
+                     aria-valuemin="0"
+                     aria-valuemax="{{ achievement.progress_total }}">
+                  {{ achievement.progress_current }} / {{ achievement.progress_total }}
+                </div>
+              </div>
+              {% endif %}
+            </div>
+          </div>
           {% endif %}
-        </div>
-      </div>
-      {% endfor %}
+        {% endfor %}
+      {% else %}
+        <p class="text-center text-light fs-5">Пока нет достижений. Начни ставить и выполнять цели!</p>
+      {% endif %}
     </div>
   </div>
 </section>
@@ -65,6 +74,9 @@
     background: linear-gradient(to right, #667eea, #764ba2);
     background-attachment: fixed;
     color: #fff;
+  }
+  .content-section-heading {
+    margin-top: 80px;
   }
 
   .achievements-section {
@@ -94,13 +106,13 @@
   .progress {
     background-color: #dcdcdc;
     border-radius: 30px;
-    height: 35px; /* увеличена высота */
   }
 
   .progress-bar {
     font-weight: bold;
-    font-size: 1.1rem; /* увеличен размер шрифта */
-    line-height: 35px; /* выравнивание текста по вертикали */
+    font-size: 0.9rem;
+    line-height: 15px;
+    color: #000;
   }
 
   @media (max-width: 575px) {
@@ -114,15 +126,6 @@
 
     .badge {
       font-size: 0.7rem;
-    }
-
-    .progress {
-      height: 28px;
-    }
-
-    .progress-bar {
-      font-size: 1rem;
-      line-height: 28px;
     }
   }
 </style>
