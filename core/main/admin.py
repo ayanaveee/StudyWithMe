@@ -1,6 +1,5 @@
 from django.contrib import admin
 from .models import (
-    StudySession,
     Goal,
     Note,
     Achievement,
@@ -10,12 +9,9 @@ from .models import (
     TopicProgress,
     FavoriteMaterial,
 )
+from django.views.decorators.http import require_POST
+from django.contrib.auth.decorators import login_required
 
-@admin.register(StudySession)
-class StudySessionAdmin(admin.ModelAdmin):
-    list_display = ('user', 'goal', 'start_time', 'end_time', 'duration', 'note')
-    search_fields = ('user__username', 'goal__title', 'note')
-    list_filter = ('start_time', 'end_time', 'goal__category')
 
 
 @admin.register(Goal)
@@ -41,8 +37,8 @@ class AchievementAdmin(admin.ModelAdmin):
 
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
-    list_display = ('title',)
-    search_fields = ('title',)
+    list_display = ('name',)
+    search_fields = ('name',)
 
 
 @admin.register(StudyMaterial)
@@ -70,3 +66,16 @@ class FavoriteMaterialAdmin(admin.ModelAdmin):
     list_display = ('user', 'material', 'added_at')
     search_fields = ('user__username', 'material__title')
     list_filter = ('added_at',)
+
+    @login_required
+    @require_POST
+    def mark_goal_completed(request, pk):
+        goal = get_object_or_404(Goal, pk=pk, user=request.user)
+        goal.is_completed = True
+        goal.save()
+
+        check_and_award_achievement(request.user)
+
+        messages.success(request, "Цель отмечена как выполненная.")
+        return redirect('goals')
+

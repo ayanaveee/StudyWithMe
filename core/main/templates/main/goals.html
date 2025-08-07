@@ -116,7 +116,7 @@
                     </button>
                   </form>
                 {% else %}
-                  <span class="badge bg-success">Выполнено</span>
+                  <button class="badge bg-success">Выполнено</button>
                 {% endif %}
 
                 <form method="post" action="{% url 'delete_goal' goal.pk %}" style="display: inline;">

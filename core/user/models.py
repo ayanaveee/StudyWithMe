@@ -64,9 +64,6 @@ class OTP(models.Model):
 class UserProfile(models.Model):
     user = models.OneToOneField(MyUser, on_delete=models.CASCADE, related_name='profile')
     level = models.PositiveIntegerField(default=1)
-    xp = models.PositiveIntegerField(default=0)
-    daily_streak = models.PositiveIntegerField(default=0)
-    last_active = models.DateField(null=True, blank=True)
 
     def __str__(self):
         return f"{self.user.username} — Уровень {self.level}"

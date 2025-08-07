@@ -1,39 +1,15 @@
 from django.db import models
 from django.contrib.auth import get_user_model
 from django.db.models.fields import CharField
-
 MyUser = get_user_model()
-
-class StudySession(models.Model):
-    user = models.ForeignKey(MyUser, on_delete=models.CASCADE, verbose_name='Пользователь')
-    goal = models.ForeignKey('Goal', on_delete=models.CASCADE, verbose_name='Цель')
-    note = models.TextField(blank=True, null=True, verbose_name='Заметка')
-    start_time = models.DateTimeField(verbose_name='Дата создания')
-    end_time = models.DateTimeField(verbose_name='Дата сессии')
-    duration = models.DurationField(blank=True, null=True, verbose_name='Длительность')
-
-    def save(self, *args, **kwargs):
-        if self.start_time and self.end_time:
-            self.duration = self.end_time - self.start_time
-        super().save(*args, **kwargs)
-
-    def __str__(self):
-        return f"Session of {self.user.username} on {self.end_time}"
-
-    class Meta:
-        verbose_name = 'Учебная сессия'
-        verbose_name_plural = 'Учебные сессии'
+from django.utils import timezone
 
 
 class Category(models.Model):
-    title = models.CharField(max_length=100, verbose_name='Название')
+    name = models.CharField(max_length=100)
 
     def __str__(self):
-        return self.title
-
-    class Meta:
-        verbose_name = 'Категория цели'
-        verbose_name_plural = 'Категории целей'
+        return self.name
 
 
 class Achievement(models.Model):
@@ -59,7 +35,7 @@ class Goal(models.Model):
         ('high', 'Высокий'),
     ]
     title = models.CharField(max_length=255, verbose_name='Цель')
-    category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, verbose_name='Категория')
+    category = models.ForeignKey('Category', on_delete=models.SET_NULL, null=True, verbose_name='Категория')
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='Дата начала')
     deadline = models.DateTimeField(verbose_name='Дата окончания')
     priority = models.CharField(max_length=10, choices=PRIORITY_CHOICES)

@@ -1,11 +1,13 @@
 from django.contrib import messages
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from .models import Achievement, StudySession, Note, Goal, StudyMaterialCategory, StudyMaterial, FavoriteMaterial
+from .models import Achievement, Note, Goal, StudyMaterialCategory, StudyMaterial, FavoriteMaterial
 from django.utils.timezone import now
 from .forms import  GoalForm
-from .forms import StudySessionForm
 from django.views.decorators.http import require_POST
+import json
+from django.views.decorators.csrf import csrf_exempt
+from django.http import HttpResponse
 
 
 def study_materials_view(request):
@@ -24,11 +26,6 @@ def index_view(request):
 
 def about(request):
     return render(request, 'main/about.html')
-
-
-@login_required
-def sessions_view(request):
-    return render(request, 'main/sessions.html')
 
 
 @login_required
@@ -72,8 +69,12 @@ def mark_goal_completed(request, pk):
     goal = get_object_or_404(Goal, pk=pk, user=request.user)
     goal.is_completed = True
     goal.save()
+
+    check_and_award_achievements(request.user)
+
     messages.success(request, "Цель отмечена как выполненная.")
     return redirect('goals')
+
 
 
 @login_required
@@ -86,13 +87,14 @@ def delete_goal(request, pk):
 
 
 
-@login_required
 def achievements_view(request):
     user = request.user
+    completed_goals_count = Goal.objects.filter(user=user, is_completed=True).count()
+    user_level = completed_goals_count // 10 + 1
+    progress_percent = (completed_goals_count % 10) * 10
+
+    # Получаем достижения (если есть другие)
     all_achievements = Achievement.objects.filter(user=user).order_by('-date_earned')
-    unlocked_count = all_achievements.filter(date_earned__isnull=False).count()
-    user_level = unlocked_count // 10 + 1
-    progress_percent = (unlocked_count % 10) * 10
 
     achievements_list = [{
         'title': ach.title,
@@ -105,58 +107,28 @@ def achievements_view(request):
         'achievements': achievements_list,
         'user_level': user_level,
         'progress_percent': progress_percent,
+        'completed_goals_count': completed_goals_count,
     }
     return render(request, 'main/achievements.html', context)
 
 
-def check_and_award_achievement(user):
-    goals_count = Goal.objects.filter(user=user).count()
-    if goals_count >= 5:
-        achievement, created = Achievement.objects.get_or_create(
-            user=user,
-            title="Пять целей",
-            defaults={'description': 'Добавлено 5 целей', 'date_earned': timezone.now()}
-        )
-        if created:
-            achievement.date_earned = timezone.now()
-            achievement.save()
-
-
-@login_required
-def create_session(request):
-    if request.method == 'POST':
-        form = StudySessionForm(request.POST)
-        if form.is_valid():
-            session = form.save(commit=False)
-            session.user = request.user
-            session.save()
-            check_and_award_achievements(request.user)
-            return redirect('sessions')
-    else:
-        form = StudySessionForm()
-    return render(request, 'main/create_session.html', {'form': form})
-
-
 def check_and_award_achievements(user):
-    unlocked = Achievement.objects.filter(user=user).values_list('title', flat=True)
-    if StudySession.objects.filter(user=user).count() >= 1 and "Первое занятие" not in unlocked:
-        Achievement.objects.create(user=user, title="Первое занятие", description="Ты начал учиться!")
-    dates = StudySession.objects.filter(user=user).values_list('date', flat=True).distinct()
-    dates = sorted(set(dates))
-    streak = 1
-    for i in range(1, len(dates)):
-        if (dates[i] - dates[i-1]).days == 1:
-            streak += 1
-        else:
-            streak = 1
-        if streak >= 7 and "7 дней подряд" not in unlocked:
-            Achievement.objects.create(user=user, title="7 дней подряд", description="Ты учился 7 дней без перерыва!")
-            break
-    if Note.objects.filter(user=user).count() >= 5 and "5 заметок" not in unlocked:
-        Achievement.objects.create(user=user, title="5 заметок", description="Ты создал 5 заметок!")
-    goals = Goal.objects.filter(user=user, end_date__lt=now().date())
-    if goals.exists() and "Цель достигнута" not in unlocked:
-        Achievement.objects.create(user=user, title="Цель достигнута", description="Ты завершил одну из своих целей!")
+    # Проверяем, сколько целей выполнено
+    completed_goals_count = Goal.objects.filter(user=user, is_completed=True).count()
+
+    # Проверяем, есть ли уже достижение "Цель достигнута"
+    achievement_code = 'goal_achievement'
+    achievement = Achievement.objects.filter(user=user, code=achievement_code).first()
+
+    if completed_goals_count > 0 and not achievement:
+        Achievement.objects.create(
+            user=user,
+            code=achievement_code,
+            title="Цель достигнута",
+            description="Ты завершил одну из своих целей!",
+            date_earned=now()
+        )
+
 
 
 def study_material_detail_view(request, material_id):
