@@ -71,6 +71,7 @@ class OTP(models.Model):
     class Meta:
         verbose_name = 'ОТП-код'
         verbose_name_plural = 'ОТП-коды'
+
 class UserProfile(models.Model):
     user = models.OneToOneField(MyUser, on_delete=models.CASCADE, related_name='profile')
     level = models.PositiveIntegerField(default=1)

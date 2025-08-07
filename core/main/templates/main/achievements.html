@@ -8,8 +8,11 @@
       <h3 class="text-warning">STUDYWITHME</h3>
       <h2 class="mb-4 text-white">Мои достижения</h2>
 
-      <h4 class="text-light">Текущий уровень: <span class="text-success fw-bold">{{ user_level }}</span></h4>
-      <div class="progress mx-auto my-3" style="width: 60%; height: 25px;">
+      <h4 class="text-light">
+        Текущий уровень:
+        <span class="fw-bold" style="color: white;">{{ user_level }}</span>
+      </h4>
+      <div class="progress mx-auto my-3" style="width: 60%;">
         <div class="progress-bar progress-bar-striped progress-bar-animated bg-success"
              role="progressbar"
              style="width: {{ progress_percent }}%;"
@@ -91,11 +94,13 @@
   .progress {
     background-color: #dcdcdc;
     border-radius: 30px;
+    height: 35px; /* увеличена высота */
   }
 
   .progress-bar {
     font-weight: bold;
-    font-size: 0.9rem;
+    font-size: 1.1rem; /* увеличен размер шрифта */
+    line-height: 35px; /* выравнивание текста по вертикали */
   }
 
   @media (max-width: 575px) {
@@ -110,6 +115,16 @@
     .badge {
       font-size: 0.7rem;
     }
+
+    .progress {
+      height: 28px;
+    }
+
+    .progress-bar {
+      font-size: 1rem;
+      line-height: 28px;
+    }
   }
 </style>
+
 {% endblock %}

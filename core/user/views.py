@@ -37,24 +37,26 @@ def user_login(request):
                 if user.is_2fa_enabled:
                     otp_code = generate_otp_code()
                     OTP.objects.create(user=user, code=otp_code)
-                    send_mail(subject=' Одноразовый код',
-                              message= f'Ваш одноразовый пароль: {otp_code}\nНикому не показывайте!',
-                              from_email=settings.DEFAULT_FROM_EMAIL,
-                              recipient_list=['ayanaabdyraeva@gmail.com'],
-                              fail_silently=False,
-                              )
-                    messages.success(request, 'Однаразовый код отправлен вам на почту.')
+                    send_mail(
+                        subject='Одноразовый код',
+                        message=f'Ваш одноразовый пароль: {otp_code}\nНикому не показывайте!',
+                        from_email=settings.DEFAULT_FROM_EMAIL,
+                        recipient_list=['ayanaabdyraeva@gmail.com'],
+                        fail_silently=False,
+                    )
+                    messages.success(request, 'Одноразовый код отправлен вам на почту.')
                     return redirect('otp_verify', user_id=user.id)
                 else:
                     login(request, user)
                     messages.success(request, 'Вы успешно вошли в аккаунт!')
-        else:
-            messages.error(request, 'Неправильный логин или пароль')
-            return redirect('user_login')
+                    return redirect('index')
+            else:
+                messages.error(request, 'Неправильный логин или пароль')
     else:
         form = MyUserLoginForm()
 
     return render(request, 'authentication/login.html', {'form': form})
+
 
 
 def user_logout(request):
