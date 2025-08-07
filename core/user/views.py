@@ -22,7 +22,7 @@ def user_register(request):
     else:
         form = MyUserRegisterForm()
 
-    return render(request, 'authentication/signin.html', {'form': form})
+    return render(request, 'authentication/register.html', {'form': form})
 
 def user_login(request):
     if request.method == 'POST':
@@ -48,9 +48,9 @@ def user_login(request):
                 else:
                     login(request, user)
                     messages.success(request, 'Вы успешно вошли в аккаунт!')
-
-        messages.error(request, 'Неправильный логин или пароль')
-        return redirect('index')
+        else:
+            messages.error(request, 'Неправильный логин или пароль')
+            return redirect('user_login')
     else:
         form = MyUserLoginForm()
 

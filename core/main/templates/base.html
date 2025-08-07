@@ -1,5 +1,4 @@
 {% load static %}
-
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -23,6 +22,29 @@
 
     <!-- Core theme CSS (Bootstrap + custom styles) -->
     <link href="{% static 'css/styles.css' %}" rel="stylesheet" />
+
+    <style>
+
+      html, body {
+        height: 100%;
+        margin: 0;
+      }
+
+      body {
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+      }
+
+      main {
+        flex: 1 0 auto;
+      }
+
+      footer.footer {
+        flex-shrink: 0;
+      }
+    </style>
+
 </head>
 <body id="page-top">
 
@@ -49,18 +71,21 @@
             {% endif %}
         </ul>
     </nav>
+
     <main>
         {% block content %}
         {% endblock %}
     </main>
-<!-- Footer -->
-<footer class="footer text-center py-4 bg-light">
-  <div class="container">
-    <p class="text-muted mb-1">© 2025 StudyWithMe</p>
-    <small class="text-muted">Создано с ❤️ для студентов</small>
-  </div>
-</footer>
-  <!-- Scroll to Top Button -->
+
+    <!-- Footer -->
+    <footer class="footer text-center py-4 bg-light">
+      <div class="container">
+        <p class="text-muted mb-1">© 2025 StudyWithMe</p>
+        <small class="text-muted">Создано с ❤️ для студентов</small>
+      </div>
+    </footer>
+
+    <!-- Scroll to Top Button -->
     <a class="scroll-to-top rounded" href="#page-top"><i class="fas fa-angle-up"></i></a>
 
     <!-- Bootstrap core JS -->
