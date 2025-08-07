@@ -1,5 +1,5 @@
 from django.db import models
-from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
+from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from .choices import UserRoleEnum
 
 class MyUserManager(BaseUserManager):
@@ -18,7 +18,7 @@ class MyUserManager(BaseUserManager):
         user.save(using=self._db)
         return user
 
-class MyUser(AbstractBaseUser):
+class MyUser(AbstractBaseUser, PermissionsMixin):
     username = models.CharField(max_length=30, verbose_name='Имя пользователя')
     email = models.EmailField(unique=True, verbose_name='Почта')
     avatar = models.ImageField(upload_to='user_avatar/', null=True, blank=True, verbose_name='Аватарка')
@@ -31,6 +31,9 @@ class MyUser(AbstractBaseUser):
     created_at = models.DateTimeField(auto_now_add=True)
     is_admin = models.BooleanField(default=False)
     is_2fa_enabled = models.BooleanField(default=False)
+    is_active = models.BooleanField(default=True)
+    is_staff = models.BooleanField(default=False)
+    is_superuser = models.BooleanField(default=False)
 
     objects = MyUserManager()
 
@@ -56,11 +59,18 @@ class MyUser(AbstractBaseUser):
         # Simplest possible answer: All admins are staff
         return self.is_admin
 
+    class Meta:
+        verbose_name = 'Пользователь'
+        verbose_name_plural = 'Пользователи'
+
 class OTP(models.Model):
     user = models.ForeignKey(MyUser, on_delete=models.CASCADE, default=1)
     code = models.CharField(max_length=6)
     created_at = models.DateTimeField(auto_now_add=True)
 
+    class Meta:
+        verbose_name = 'ОТП-код'
+        verbose_name_plural = 'ОТП-коды'
 class UserProfile(models.Model):
     user = models.OneToOneField(MyUser, on_delete=models.CASCADE, related_name='profile')
     level = models.PositiveIntegerField(default=1)

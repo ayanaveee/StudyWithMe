@@ -6,7 +6,6 @@ from .models import (
     Category,
     StudyMaterial,
     StudyMaterialCategory,
-    TopicProgress,
     FavoriteMaterial,
 )
 from django.views.decorators.http import require_POST
@@ -52,13 +51,6 @@ class StudyMaterialAdmin(admin.ModelAdmin):
 class StudyMaterialCategoryAdmin(admin.ModelAdmin):
     list_display = ('title',)
     search_fields = ('title',)
-
-
-@admin.register(TopicProgress)
-class TopicProgressAdmin(admin.ModelAdmin):
-    list_display = ('user', 'material', 'completed', 'completed_at')
-    search_fields = ('user__username', 'material__title')
-    list_filter = ('completed', 'completed_at')
 
 
 @admin.register(FavoriteMaterial)

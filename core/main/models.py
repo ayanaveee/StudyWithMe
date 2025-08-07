@@ -6,10 +6,14 @@ from django.utils import timezone
 
 
 class Category(models.Model):
-    name = models.CharField(max_length=100)
+    name = models.CharField(max_length=100, default="Без категории")
 
     def __str__(self):
         return self.name
+
+    class Meta:
+        verbose_name = 'Категория цели'
+        verbose_name_plural = 'Категория целей'
 
 
 class Achievement(models.Model):
@@ -47,21 +51,6 @@ class Goal(models.Model):
     class Meta:
         verbose_name = 'Цель'
         verbose_name_plural = 'Цели'
-
-
-class TopicProgress(models.Model):
-    user = models.ForeignKey(MyUser, on_delete=models.CASCADE)
-    material = models.ForeignKey('StudyMaterial', on_delete=models.CASCADE)
-    completed = models.BooleanField(default=False)
-    completed_at = models.DateTimeField(null=True, blank=True)
-
-    def __str__(self):
-        status = "Изучено" if self.completed else "В процессе"
-        return f"{self.user.username} — {self.material.title} ({status})"
-
-    class Meta:
-        verbose_name = "Прогресс по теме"
-        verbose_name_plural = "Прогресс по темам"
 
 
 class FavoriteMaterial(models.Model):

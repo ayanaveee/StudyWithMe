@@ -2,26 +2,30 @@
 {% load static %}
 {% block content %}
 
-<h2>Избранные материалы</h2>
+<div class="favorites-wrapper">
+  <h2>💜 Избранные материалы</h2>
 
-<ul>
-  {% for favorite in favorites %}
-    <li class="favorite-item">
-      <div class="favorite-title">
-        • <a href="{% url 'favorite_material_detail' favorite.material.id %}">
-          {{ favorite.material.title }}
-        </a>
-      </div>
+  <ul class="favorites-list">
+    {% for favorite in favorites %}
+      <li class="favorite-item">
+        <div class="favorite-title">
+          • <a href="{% url 'favorite_material_detail' favorite.material.id %}">
+            {{ favorite.material.title }}
+          </a>
+        </div>
 
-      <form method="post" action="{% url 'remove_favorite' favorite.material.id %}" class="favorite-remove-form remove-form">
-        {% csrf_token %}
-        <button type="submit" class="remove-button" data-title="{{ favorite.material.title }}">Удалить из избранного</button>
-      </form>
-    </li>
-  {% empty %}
-    <li>У вас пока нет избранных материалов.</li>
-  {% endfor %}
-</ul>
+        <form method="post" action="{% url 'remove_favorite' favorite.material.id %}" class="favorite-remove-form">
+          {% csrf_token %}
+          <button type="submit" class="remove-button" data-title="{{ favorite.material.title }}">
+            Удалить из избранного
+          </button>
+        </form>
+      </li>
+    {% empty %}
+      <li class="empty-message">У вас пока нет избранных материалов.</li>
+    {% endfor %}
+  </ul>
+</div>
 
 <script>
   document.querySelectorAll('.remove-button').forEach(button => {
@@ -34,34 +38,77 @@
 </script>
 
 <style>
-  .favorite-item {
-    margin-bottom: 20px;
-    padding: 10px;
-    border-bottom: 1px solid #ddd;
+  body {
+    background: linear-gradient(to right, #667eea, #764ba2);
+    font-family: 'Segoe UI', sans-serif;
+    color: #fff;
+    margin: 0;
+    padding: 0;
   }
 
-  .favorite-title {
+  .favorites-wrapper {
+    max-width: 700px;
+    margin: 50px auto;
+    background-color: rgba(255, 255, 255, 0.1);
+    padding: 30px;
+    border-radius: 16px;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+  }
+
+  .favorites-wrapper h2 {
+    text-align: center;
+    margin-bottom: 30px;
+    font-size: 28px;
+    color: #fff;
+  }
+
+  .favorites-list {
+    list-style: none;
+    padding: 0;
+  }
+
+  .favorite-item {
+    margin-bottom: 25px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid rgba(255,255,255,0.2);
+  }
+
+  .favorite-title a {
     font-size: 18px;
-    font-weight: bold;
-    margin-bottom: 5px;
+    color: #fff;
+    text-decoration: none;
+    transition: color 0.3s;
+  }
+
+  .favorite-title a:hover {
+    color: #f5d0fe;
   }
 
   .favorite-remove-form {
-    margin-top: 5px;
+    margin-top: 10px;
   }
 
-  .favorite-remove-form button {
-    padding: 6px 10px;
-    background-color: white;
-    border: 1px solid black;
+  .remove-button {
+    padding: 8px 14px;
+    border-radius: 8px;
+    background-color: rgba(255,255,255,0.2);
+    border: none;
+    color: #fff;
+    font-weight: 500;
     cursor: pointer;
-    font-size: 14px;
+    transition: background-color 0.3s ease;
   }
 
-  .favorite-remove-form button:hover {
-    background-color: #eee;
+  .remove-button:hover {
+    background-color: rgba(255,255,255,0.35);
+  }
+
+  .empty-message {
+    text-align: center;
+    font-style: italic;
+    color: #ddd;
   }
 </style>
-
 
 {% endblock %}

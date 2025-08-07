@@ -5,20 +5,21 @@ from .choices import UserRoleEnum
 
 class MyUserAdmin(BaseUserAdmin):
     model = MyUser
-    list_display = ('email', 'username', 'role', 'created_at')
-    list_filter = ('role', )
+    list_display = ('email', 'username', 'role', 'is_admin', 'created_at')
+    list_filter = ('role', 'is_admin')
     search_fields = ('email', 'username')
     ordering = ('-created_at',)
 
     fieldsets = (
         (None, {'fields': ('email', 'username', 'password')}),
-        ('Личная информация', {'fields': ('avatar', 'is_2fa_enabled')}),
+        ('Личная информация', {'fields': ('avatar', 'is_2fa_enabled', 'role')}),
+        ('Права доступа', {'fields': ('is_admin', 'is_superuser')}),
     )
-    filter_horizontal = ()
+
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
-            'fields': ('email', 'username', 'password1', 'password2', 'role')}
+            'fields': ('email', 'username', 'password1', 'password2', 'role', 'is_admin')}
         ),
     )
 
